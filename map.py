@@ -1,7 +1,7 @@
-from random import choice
+from random import choice, randint
 
 class Tile:
-    def __init__(self, figure : str | None = None, color : str = "#aaaaaa"):
+    def __init__(self, figure : str | None = None, color : tuple[int,int,int] = (127,127,127)):
         self.figure = figure
         self.color = color
 
@@ -10,8 +10,6 @@ class Map:
         self.map = {}
     
     def __getitem__(self, key : tuple[int,int]) -> None | Tile:
-        if key[1] == ...:
-            return self.map.setdefault(key[0],{})
         return self.map.setdefault(key[0],{}).setdefault(key[1])
     
     def __setitem__(self, key : tuple[int,int], value : None | Tile):
@@ -19,15 +17,22 @@ class Map:
         self.map[key[0]][key[1]] = value
     
     def __str__(self):
-        return "\n".join(["".join(["#" if self[i,j] != None else " " for j in range(20)]) for i in range(10)])
+        return "\n".join(["".join(["#" if self[i,j] != None else " " for j in range(10)]) for i in range(20)])
+
+    def __repr__(self):
+        return self.map
+
+    def __delitem__(self, name : tuple[int,int]):
+        del self.map[name[0]][name[1]]
 
     def seek_figure(self, figure : str = "a"):
-        raw_map = [[(i,j) for j in self[i,...] if self[i,j].figure == figure] for i in self.map]
+        raw_map = [[(i,j) for j in self.map[i] if self[i,j].figure == figure] for i in self.map]
         return [x for xs in raw_map for x in xs]
 
-    def gen_figure(self, at : tuple[int,int] = (20,5), size : int = 4, width : int = 11, figure : str = "a"):
+    def gen_figure(self, at : tuple[int,int] = (5,20), size : int = 4, width : int = 11, figure : str = "a"):
+        color = (randint(20,150),randint(20,150),randint(20,150))
+        coords = [at]
         for _ in range(1,size):
-            coords = [at]
             new_coords = []
             for i in coords:
                 new_coords.append((i[0],i[1] + 1))
@@ -38,5 +43,35 @@ class Map:
             coords.append(choice(new_coords))
         
         for i in coords:
-            self[i] = Tile(figure)
-        
+            self[i] = Tile(figure,color)
+    
+    def __contains__(self, item : tuple[int,int]):
+        return item[0] in self.map and item[1] in self.map[item[0]]
+
+    def fall(self, figure : str = "a"):
+        f_coords = self.seek_figure(figure)
+        color = self[f_coords[0]].color
+        for i in f_coords:
+            del self[i]
+        for i in f_coords:
+            self[i[0],i[1] - 1] = Tile(figure, color)
+    
+    def can_fall(self, figure : str = "a"):
+        f_coords = self.seek_figure(figure)
+        for i in f_coords:
+            if i[1] == 0: return False
+            if (i[0],i[1] - 1) in self and self[i[0],i[1] - 1].figure != figure:
+                return False
+        return True
+    
+    def remove_figure_status(self, figure : str = "a"):
+        for i in self.map:
+            for j in self.map[i]:
+                self[i,j] = Tile(None,self[i,j].color)
+
+def enum(map):
+    ret = []
+    for x in map.map:
+        for y in map.map[x]:
+            ret.append([(x,y),map[x,y]])
+    return ret
