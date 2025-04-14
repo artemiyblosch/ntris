@@ -58,21 +58,13 @@ class Map:
     
     def can_move(self, figure : str = "a", direction : tuple[int,int] = (0,-1), width = 21):
         f_coords = self.seek_figure(figure)
-        for i in f_coords:
-            if i[1] + direction[1] < 0: return False
-            if not (0 < i[0] + direction[0] < width): return False
-            if (i[0] + direction[0], i[1] + direction[1]) in self and\
-               (self[i[0] + direction[0], i[1] + direction[1]] or Tile(None)).figure != figure:
-                return False
-        return True
+        f_coords = [(i[0] + direction[0], i[1] + direction[1]) for i in f_coords]
+        return self.are_valid_coords(f_coords)
     
     def remove_figure_status(self, figure : str = "a"):
         for i in self.map:
             for j in self.map[i]:
                 self[i,j] = Tile(None if self[i,j].figure == figure else self[i,j].figure,self[i,j].color)
-    
-    def flush(self):
-        self.map = {i: {j: self[i,j] for j in self.map if self[i,j] != None} for i in self.map}
 
     def rotate(self, figure : str = "a"):
         f_coords = self.seek_figure(figure)
@@ -86,11 +78,15 @@ class Map:
     def can_rotate(self, figure : str = "a", width : int = 21):
         f_coords = self.seek_figure(figure)
         center = (round(avg([i[0] for i in f_coords])), round(avg([i[1] for i in f_coords])))
+        f_coords = [rotate(i,center) for i in f_coords]
+        return self.are_valid_coords(f_coords, figure, width)
+    
+    def are_valid_coords(self, f_coords, figure : str = "a", width : int = 21):
         for i in f_coords:
-            if rotate(i,center)[1] < 0: return False
-            if not (0 < rotate(i,center)[0] < width): return False
-            if rotate(i,center) in self and\
-               (self[rotate(i,center)] or Tile(None)).figure != figure:
+            if i[1] < 0: return False
+            if not (0 < i[0] < width): return False
+            if i in self and\
+               (self[i] or Tile(None)).figure != figure:
                 return False
         return True
 
