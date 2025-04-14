@@ -26,10 +26,10 @@ class Map:
         del self.map[name[0]][name[1]]
 
     def seek_figure(self, figure : str = "a"):
-        raw_map = [[(i,j) for j in self.map[i] if self[i,j].figure == figure] for i in self.map]
+        raw_map = [[(i,j) for j in self.map[i] if self[i,j] != None and self[i,j].figure == figure] for i in self.map]
         return [x for xs in raw_map for x in xs]
 
-    def gen_figure(self, at : tuple[int,int] = (5,20), size : int = 4, width : int = 11, figure : str = "a"):
+    def gen_figure(self, at : tuple[int,int] = (10,42), size : int = 4, width : int = 21, figure : str = "a"):
         color = (randint(20,150),randint(20,150),randint(20,150))
         coords = [at]
         for _ in range(1,size):
@@ -48,26 +48,54 @@ class Map:
     def __contains__(self, item : tuple[int,int]):
         return item[0] in self.map and item[1] in self.map[item[0]]
 
-    def fall(self, figure : str = "a"):
+    def move(self, figure : str = "a", direction : tuple[int,int] = (0,-1)):
         f_coords = self.seek_figure(figure)
         color = self[f_coords[0]].color
         for i in f_coords:
             del self[i]
         for i in f_coords:
-            self[i[0],i[1] - 1] = Tile(figure, color)
+            self[i[0] + direction[0], i[1] + direction[1]] = Tile(figure, color)
     
-    def can_fall(self, figure : str = "a"):
+    def can_move(self, figure : str = "a", direction : tuple[int,int] = (0,-1), width = 21):
         f_coords = self.seek_figure(figure)
         for i in f_coords:
-            if i[1] == 0: return False
-            if (i[0],i[1] - 1) in self and self[i[0],i[1] - 1].figure != figure:
+            if i[1] + direction[1] < 0: return False
+            if not (0 < i[0] + direction[0] < width): return False
+            if (i[0] + direction[0], i[1] + direction[1]) in self and\
+               (self[i[0] + direction[0], i[1] + direction[1]] or Tile(None)).figure != figure:
                 return False
         return True
     
     def remove_figure_status(self, figure : str = "a"):
         for i in self.map:
             for j in self.map[i]:
-                self[i,j] = Tile(None,self[i,j].color)
+                self[i,j] = Tile(None if self[i,j].figure == figure else self[i,j].figure,self[i,j].color)
+    
+    def flush(self):
+        self.map = {i: {j: self[i,j] for j in self.map if self[i,j] != None} for i in self.map}
+
+    def rotate(self, figure : str = "a"):
+        f_coords = self.seek_figure(figure)
+        color = self[f_coords[0]].color
+        center = (round(avg([i[0] for i in f_coords])), round(avg([i[1] for i in f_coords])))
+        for i in f_coords:
+            del self[i]
+        for i in f_coords:
+            self[rotate(i,center)] = Tile(figure, color)
+    
+    def can_rotate(self, figure : str = "a", width : int = 21):
+        f_coords = self.seek_figure(figure)
+        center = (round(avg([i[0] for i in f_coords])), round(avg([i[1] for i in f_coords])))
+        for i in f_coords:
+            if rotate(i,center)[1] < 0: return False
+            if not (0 < rotate(i,center)[0] < width): return False
+            if rotate(i,center) in self and\
+               (self[rotate(i,center)] or Tile(None)).figure != figure:
+                return False
+        return True
+
+def avg(lst : list):
+    return sum(lst)/len(lst)
 
 def enum(map):
     ret = []
@@ -75,3 +103,6 @@ def enum(map):
         for y in map.map[x]:
             ret.append([(x,y),map[x,y]])
     return ret
+
+def rotate(p : tuple[int,int], a : tuple[int,int],):
+  return [-p[1]+a[1]+a[0],p[0]-a[0]+a[1]]

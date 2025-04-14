@@ -2,17 +2,25 @@ import pygame as pg
 import sys
 from map import Map, enum
 import random
+from timing import Timer
 
 pg.init()
-screen = pg.display.set_mode((800,800))
+screen = pg.display.set_mode((1000,1000))
 clock = pg.time.Clock()
 
 map = Map()
 map.gen_figure(size=random.randint(1,12))
 
+fps = 60
+fall_timer = Timer(framerate=8)
+move_timer = Timer(framerate=13)
+rotate_timer = Timer(framerate=9)
+stun_cooldown = 0
+zone_start = (126,4*32)
+
 while True:
-    pg.draw.rect(screen,(0,0,0),(0,0,800,800))
-    pg.draw.rect(screen,(111,111,111),(110,4*32,11*32,21*32),5)
+    pg.draw.rect(screen,(0,0,0),(0,0,1000,1000))
+    pg.draw.rect(screen,(111,111,111),(*zone_start,20*16,42*16),5)
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -20,17 +28,30 @@ while True:
             sys.exit()
     
     keys = pg.key.get_pressed()
-    if keys[pg.K_RIGHT]:
-        print("Нажата клавиша enter")
+    can_do = move_timer.tick(fps)
+    if keys[pg.K_RIGHT] and map.can_move(direction=(1,0)) and can_do:
+        map.move(direction=(1,0))
+        stun_cooldown += 1
+    if keys[pg.K_LEFT] and map.can_move(direction=(-1,0)) and can_do:
+        map.move(direction=(-1,0))
+        stun_cooldown += 1
+    if keys[pg.K_DOWN] and map.can_move() and can_do:
+        map.move()
+        stun_cooldown = 20
+    if keys[pg.K_UP] and map.can_rotate() and rotate_timer.tick():
+        map.rotate()
+        stun_cooldown += 1
     
     for i,v in enum(map):
-        if i[1] < 21: pg.draw.rect(screen, v.color,(i[0] * 32 + 110, 24*32 - i[1] * 32,32,32))
+        if i[1] < 42: pg.draw.rect(screen, v.color,(i[0] * 16 + zone_start[0] - 16, 1000 - zone_start[1] - 6*16 + 8 - i[1] * 16,16,16))
     
-    if map.can_fall():
-        map.fall()
-    else:
+    if map.can_move():
+        if fall_timer.tick(fps): map.move()
+        stun_cooldown = 20
+    elif stun_cooldown < 0:
         map.remove_figure_status()
         map.gen_figure(size=random.randint(1,12))
     
     pg.display.flip()
-    clock.tick(10)
+    clock.tick(fps)
+    stun_cooldown -= 1
