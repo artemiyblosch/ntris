@@ -41,6 +41,9 @@ while True:
     if keys[pg.K_UP] and map.can_rotate() and rotate_timer.tick():
         map.rotate()
         stun_cooldown += 1
+    if keys[pg.K_v] and map.can_flip() and rotate_timer.tick():
+        map.flip()
+        stun_cooldown += 1
     
     for i,v in enum(map):
         if i[1] < 42: pg.draw.rect(screen, v.color,(i[0] * 16 + zone_start[0] - 16, 1000 - zone_start[1] - 6*16 + 8 - i[1] * 16,16,16))

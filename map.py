@@ -42,6 +42,9 @@ class Map:
             new_coords = [i for i in new_coords if 0 < i[0] < width + 1 and i not in coords]
             coords.append(choice(new_coords))
         
+        if randint(1,10) == 1:
+            coords = [(at[0],at[1]+i) for i in range(size)]
+        
         for i in coords:
             self[i] = Tile(figure,color)
     
@@ -75,12 +78,6 @@ class Map:
         for i in f_coords:
             self[rotate(i,center)] = Tile(figure, color)
     
-    def can_rotate(self, figure : str = "a", width : int = 21):
-        f_coords = self.seek_figure(figure)
-        center = (round(avg([i[0] for i in f_coords])), round(avg([i[1] for i in f_coords])))
-        f_coords = [rotate(i,center) for i in f_coords]
-        return self.are_valid_coords(f_coords, figure, width)
-    
     def are_valid_coords(self, f_coords, figure : str = "a", width : int = 21):
         for i in f_coords:
             if i[1] < 0: return False
@@ -89,6 +86,36 @@ class Map:
                (self[i] or Tile(None)).figure != figure:
                 return False
         return True
+    
+    def rotate(self, figure : str = "a"):
+        f_coords = self.seek_figure(figure)
+        color = self[f_coords[0]].color
+        center = (round(avg([i[0] for i in f_coords])), round(avg([i[1] for i in f_coords])))
+        for i in f_coords:
+            del self[i]
+        for i in f_coords:
+            self[rotate(i,center)] = Tile(figure, color)
+    
+    def can_rotate(self, figure : str = "a", width : int = 21):
+        f_coords = self.seek_figure(figure)
+        center = (round(avg([i[0] for i in f_coords])), round(avg([i[1] for i in f_coords])))
+        f_coords = [rotate(i,center) for i in f_coords]
+        return self.are_valid_coords(f_coords, figure, width)
+    
+    def flip(self, figure : str = "a"):
+        f_coords = self.seek_figure(figure)
+        color = self[f_coords[0]].color
+        center = round(avg([i[0] for i in f_coords]))
+        for i in f_coords:
+            del self[i]
+        for i in f_coords:
+            self[flip(i,center)] = Tile(figure, color)
+    
+    def can_flip(self, figure : str = "a", width : int = 21):
+        f_coords = self.seek_figure(figure)
+        center = round(avg([i[0] for i in f_coords]))
+        f_coords = [flip(i,center) for i in f_coords]
+        return self.are_valid_coords(f_coords, figure, width)
 
 def avg(lst : list):
     return sum(lst)/len(lst)
@@ -100,5 +127,8 @@ def enum(map):
             ret.append([(x,y),map[x,y]])
     return ret
 
-def rotate(p : tuple[int,int], a : tuple[int,int],):
-  return [-p[1]+a[1]+a[0],p[0]-a[0]+a[1]]
+def rotate(p : tuple[int,int], a : tuple[int,int]) -> tuple[int,int]:
+  return (-p[1]+a[1]+a[0],p[0]-a[0]+a[1])
+
+def flip(p : tuple[int,int], a : int) -> tuple[int,int]:
+    return (2*a-p[0],p[1])
