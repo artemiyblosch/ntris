@@ -1,7 +1,6 @@
 import pygame as pg
 import sys
 from map import *
-import random
 from timing import Timer
 from utils import *
 from generating import *
@@ -39,7 +38,6 @@ while True:
     can_do = move_timer.tick(fps)
 
     if keys[pg.K_F1]:
-        print("F")
         paused = not paused
         sleep(0.1)
     if paused: 
