@@ -4,6 +4,7 @@ from map import *
 import random
 from timing import Timer
 from utils import *
+from generating import *
 from time import sleep
 
 pg.init()
@@ -12,7 +13,7 @@ clock = pg.time.Clock()
 
 map = Map()
 gen_range = (3,11)
-map.gen_figure(size=random.randint(*gen_range))
+gen_figure(map,size_range=gen_range)
 
 fps = 60
 
@@ -70,7 +71,7 @@ while True:
         stun_cooldown = 20
     elif stun_cooldown < 0:
         map.remove_figure_status()
-        map.gen_figure(size=random.randint(*gen_range))
+        gen_figure(map,size_range=gen_range)
         is_going = True
         while is_going:
             is_going = False

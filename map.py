@@ -33,25 +33,6 @@ class Map:
     def seek_figure(self, figure : str = "a"):
         raw_map = [[(i,j) for j in self.map[i] if self[i,j] != None and self[i,j].figure == figure] for i in self.map]
         return [x for xs in raw_map for x in xs]
-
-    def gen_figure(self, at : tuple[int,int] = (10,42), size : int = 4, width : int = 21, figure : str = "a"):
-        color = (randint(20,150),randint(20,150),randint(20,150))
-        coords = [at]
-        for _ in range(1,size):
-            new_coords = []
-            for i in coords:
-                new_coords.append((i[0],i[1] + 1))
-                new_coords.append((i[0],i[1] - 1))
-                new_coords.append((i[0] + 1,i[1]))
-                new_coords.append((i[0] - 1,i[1]))
-            new_coords = [i for i in new_coords if 0 < i[0] < width + 1 and i not in coords]
-            coords.append(choice(new_coords))
-        
-        if randint(1,10) == 1:
-            coords = [(at[0],at[1]+i) for i in range(size)]
-        
-        for i in coords:
-            self[i] = Tile(figure,color)
     
     def __contains__(self, item : tuple[int,int]):
         return item[0] in self.map and item[1] in self.map[item[0]]

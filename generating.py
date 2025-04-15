@@ -1,7 +1,23 @@
 from map import *
 from random import randint, choice
 
-def gen_figure(map, at : tuple[int,int] = (10,42), size : int = 4, width : int = 21, figure : str = "a"):
+
+def gen_figure(map, at : tuple[int,int] = (10,42), size_range : int = (3,13), width : int = 21, figure : str = "a"):
+    color = (randint(20,150),randint(20,150),randint(20,150))
+    if randint(1,50) == 1:
+        map[at] = Tile(figure,color)
+        return
+    if randint(1,30) == 1:
+        map[at] = Tile(figure,color)
+        map[at[0],at[1]+1] = Tile(figure,color)
+        return
+    if randint(1,1000) == 1:
+        for i in range(width):
+             map[i,at[1]] = Tile(figure,color)
+        return
+    return gen_raw_figure(map,at,randint(*size_range),width,figure)
+
+def gen_raw_figure(map, at : tuple[int,int] = (10,42), size : int = 4, width : int = 21, figure : str = "a"):
         color = (randint(20,150),randint(20,150),randint(20,150))
         coords = [at]
         for _ in range(1,size):
