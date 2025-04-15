@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-from map import Map, enum
+from map import Map, enum, filterD
 import random
 from timing import Timer
 
@@ -54,6 +54,7 @@ while True:
     elif stun_cooldown < 0:
         map.remove_figure_status()
         map.gen_figure(size=random.randint(1,12))
+        map.get_line(0)
     
     pg.display.flip()
     clock.tick(fps)

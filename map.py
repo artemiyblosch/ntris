@@ -10,7 +10,9 @@ class Map:
         self.map = {}
     
     def __getitem__(self, key : tuple[int,int]) -> None | Tile:
-        return self.map.setdefault(key[0],{}).setdefault(key[1])
+        if key[0] not in self.map: return None
+        if key[1] not in self.map[key[0]]: return None
+        return self.map[key[0]][key[1]]
     
     def __setitem__(self, key : tuple[int,int], value : None | Tile):
         if key[0] not in self.map: self.map[key[0]] = {}
@@ -116,6 +118,9 @@ class Map:
         center = round(avg([i[0] for i in f_coords]))
         f_coords = [flip(i,center) for i in f_coords]
         return self.are_valid_coords(f_coords, figure, width)
+    
+    def get_line(self, line, width : int = 21):
+        a = [self[i,line] for i in range(width)]
 
 def avg(lst : list):
     return sum(lst)/len(lst)
@@ -132,3 +137,6 @@ def rotate(p : tuple[int,int], a : tuple[int,int]) -> tuple[int,int]:
 
 def flip(p : tuple[int,int], a : int) -> tuple[int,int]:
     return (2*a-p[0],p[1])
+
+def filterD(d):
+    return dict(filter(lambda item: item[1] != None, d.items()))
