@@ -1,26 +1,28 @@
 import pygame as pg
 import sys
-from map import Map, enum, filterD
+from map import *
 import random
 from timing import Timer
+from utils import *
 
 pg.init()
 screen = pg.display.set_mode((1000,1000))
 clock = pg.time.Clock()
 
 map = Map()
-map.gen_figure(size=random.randint(1,12))
+gen_range = (1, 6)
+map.gen_figure(size=random.randint(*gen_range))
 
 fps = 60
 fall_timer = Timer(framerate=8)
 move_timer = Timer(framerate=13)
 rotate_timer = Timer(framerate=9)
 stun_cooldown = 0
-zone_start = (126,4*32)
+zone_start = (110,4*32)
 
 while True:
     pg.draw.rect(screen,(0,0,0),(0,0,1000,1000))
-    pg.draw.rect(screen,(111,111,111),(*zone_start,20*16,42*16),5)
+    pg.draw.rect(screen,(111,111,111),(zone_start[0]-5,zone_start[1]-5,21*16 + 10,42*16 + 10),5)
 
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -46,15 +48,21 @@ while True:
         stun_cooldown += 1
     
     for i,v in enum(map):
-        if i[1] < 42: pg.draw.rect(screen, v.color,(i[0] * 16 + zone_start[0] - 16, 1000 - zone_start[1] - 6*16 + 8 - i[1] * 16,16,16))
+        if i[1] < 42: pg.draw.rect(screen, v.color,(i[0] * 16 + zone_start[0], 1000 - zone_start[1] - 6*16 + 8 - i[1] * 16,16,16))
     
     if map.can_move():
         if fall_timer.tick(fps): map.move()
         stun_cooldown = 20
     elif stun_cooldown < 0:
         map.remove_figure_status()
-        map.gen_figure(size=random.randint(1,12))
-        map.get_line(0)
+        map.gen_figure(size=random.randint(*gen_range))
+        is_going = True
+        while is_going:
+            is_going = False
+            for i in range(41):
+                if not has(map.get_line(i),None): 
+                    map.delete_line(i)
+                    is_going = True
     
     pg.display.flip()
     clock.tick(fps)

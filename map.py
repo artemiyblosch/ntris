@@ -1,4 +1,5 @@
 from random import choice, randint
+from utils import *
 
 class Tile:
     def __init__(self, figure : str | None = None, color : tuple[int,int,int] = (127,127,127)):
@@ -24,8 +25,10 @@ class Map:
     def __repr__(self):
         return self.map
 
-    def __delitem__(self, name : tuple[int,int]):
-        del self.map[name[0]][name[1]]
+    def __delitem__(self, key : tuple[int,int]):
+        if key[0] not in self.map: return
+        if key[1] not in self.map[key[0]]: return
+        del self.map[key[0]][key[1]]
 
     def seek_figure(self, figure : str = "a"):
         raw_map = [[(i,j) for j in self.map[i] if self[i,j] != None and self[i,j].figure == figure] for i in self.map]
@@ -83,7 +86,7 @@ class Map:
     def are_valid_coords(self, f_coords, figure : str = "a", width : int = 21):
         for i in f_coords:
             if i[1] < 0: return False
-            if not (0 < i[0] < width): return False
+            if not (0 <= i[0] < width): return False
             if i in self and\
                (self[i] or Tile(None)).figure != figure:
                 return False
@@ -119,24 +122,18 @@ class Map:
         f_coords = [flip(i,center) for i in f_coords]
         return self.are_valid_coords(f_coords, figure, width)
     
-    def get_line(self, line, width : int = 21):
-        a = [self[i,line] for i in range(width)]
+    def get_line(self, line : int, width : int = 21):
+        return [self[i,line] for i in range(width)]
+    
+    def delete_line(self, line : int, width : int = 21):
+        for i in range(width): del self[i,line]
 
-def avg(lst : list):
-    return sum(lst)/len(lst)
-
-def enum(map):
-    ret = []
-    for x in map.map:
-        for y in map.map[x]:
-            ret.append([(x,y),map[x,y]])
-    return ret
-
-def rotate(p : tuple[int,int], a : tuple[int,int]) -> tuple[int,int]:
-  return (-p[1]+a[1]+a[0],p[0]-a[0]+a[1])
-
-def flip(p : tuple[int,int], a : int) -> tuple[int,int]:
-    return (2*a-p[0],p[1])
-
-def filterD(d):
-    return dict(filter(lambda item: item[1] != None, d.items()))
+        coords = []
+        for x in self.map:
+            for y in self.map[x]:
+                if y > line:
+                    coords.append((x,y))
+        coords.sort(key=lambda a: a[1])
+        for i in coords:
+            self[i[0],i[1]-1] = self[i]
+            del self[i]
