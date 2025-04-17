@@ -19,7 +19,8 @@ class Game:
         self.pause_timer = Timer(framerate=3)
         self.zone_start = (110,4*32)
         self.paused = False
-        self.map = self.map()
+        self.map = Map()
+        gen_figure(self.map,size_range=self.gen_range)
     
     def frame(self):
         pg.draw.rect(self.screen,(0,0,0),(0,0,1000,1000))
@@ -30,9 +31,9 @@ class Game:
         keys = pg.key.get_pressed()
         can_do = self.move_timer.tick(self.fps)
         if keys[pg.K_F1]:
-            paused = not paused
+            self.paused = not self.paused
             sleep(0.1)
-        if paused: 
+        if self.paused: 
             pg.draw.rect(self.screen,(128,128,128),(0,0,1000,1000))
             return
 
@@ -75,3 +76,4 @@ class Game:
                         self.score += 10 
                         self.map.delete_line(i)
                         is_going = True
+        self.stun_cooldown -= 1

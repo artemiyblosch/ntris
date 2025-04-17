@@ -1,1 +1,1 @@
-from game import *
+from modes.game import *
