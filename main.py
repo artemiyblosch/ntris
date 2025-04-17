@@ -6,13 +6,14 @@ from utils import *
 from fonts import *
 from generating import *
 from time import sleep
+from modes import *
 
 pg.init()
 screen = pg.display.set_mode((1000,1000))
 clock = pg.time.Clock()
 
 map = Map()
-gen_range = (3,11)
+gen_range = (3,9)
 gen_figure(map,size_range=gen_range)
 
 fps = 60
@@ -28,7 +29,7 @@ zone_start = (110,4*32)
 paused = False
 
 load_font("default", (None,36))
-
+game = Game()
 while True:
     pg.draw.rect(screen,(0,0,0),(0,0,1000,1000))
     pg.draw.rect(screen,(111,111,111),(zone_start[0]-5,zone_start[1]-5,21*16 + 10,42*16 + 10),5)
@@ -74,6 +75,10 @@ while True:
         stun_cooldown = 20
     elif stun_cooldown < 0:
         map.remove_figure_status()
+        for i in range(21):
+            if map[i,41] != None:
+                pg.quit()
+                sys.exit()
         gen_figure(map,size_range=gen_range)
         score += 1
         is_going = True
