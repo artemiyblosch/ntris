@@ -1,4 +1,3 @@
-from random import choice, randint
 from utils import *
 
 class Tile:
