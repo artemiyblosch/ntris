@@ -1,9 +1,8 @@
 import pygame as pg
-from timing import *
-from fonts import *
+from sprites import *
 from time import sleep
 from utils import *
-from generating import *
+from mapgen import *
 import sys
 
 class Game:

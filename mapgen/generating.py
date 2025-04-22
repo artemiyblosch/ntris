@@ -1,4 +1,4 @@
-from map import *
+from mapgen import *
 from random import randint, choice
 
 
