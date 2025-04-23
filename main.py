@@ -8,6 +8,8 @@ clock = pg.time.Clock()
 
 gen_range = (3,11)
 fps = 60
+mode = "menu"
+
 game = Game(screen,fps,gen_range)
 
 load_font("default", (None,36))
