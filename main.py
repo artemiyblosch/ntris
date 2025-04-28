@@ -14,6 +14,8 @@ game = Game(screen,fps,gen_range)
 menu = Menu(screen,mode)
 
 load_font("default", (None,36))
+load_font("big", (None,90))
+load_font("logo", (None,200))
 
 while True:
     for event in pg.event.get():

@@ -5,6 +5,7 @@ def load_font(name : str, args):
     fonts[name] = pg.font.Font(*args)
 
 def get_font(name : str):
+    if name not in fonts: return fonts["default"]
     return fonts[name]
 
 texts = {}
