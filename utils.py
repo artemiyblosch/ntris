@@ -19,3 +19,10 @@ def filterD(d):
 
 def has(l,v):
     return bool(sum([1 for i in l if i == v]))
+
+class ModeLink:
+    def __init__(self,mode):
+        self.mode = mode
+    
+    def set_mode(self,mode):
+        self.mode = mode
