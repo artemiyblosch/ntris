@@ -6,7 +6,7 @@ pg.init()
 screen = pg.display.set_mode((1000,1000))
 clock = pg.time.Clock()
 
-gen_range = (3,11)
+gen_range = (3,10)
 fps = 60
 mode = ModeLink("menu")
 

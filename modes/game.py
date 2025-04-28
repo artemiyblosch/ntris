@@ -19,6 +19,7 @@ class Game:
         self.zone_start = (110,4*32)
         self.paused = False
         self.map = Map()
+        self.can_hold = True
         gen_figure(self.map,size_range=self.gen_range)
     
     def frame(self):
