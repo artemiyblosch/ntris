@@ -20,7 +20,7 @@ class Game:
         self.paused = False
         self.map = Map()
         self.can_hold = True
-        gen_figure(self.map,size_range=self.gen_range)
+        apply_to(self.map,gen_figure(size_range=self.gen_range))
     
     def frame(self):
         pg.draw.rect(self.screen,(0,0,0),(0,0,1000,1000))
@@ -66,7 +66,7 @@ class Game:
                 if self.map[i,41] != None:
                     pg.quit()
                     sys.exit()
-            gen_figure(self.map,size_range=self.gen_range)
+            apply_to(self.map,gen_figure(size_range=self.gen_range))
             self.score += 1
             is_going = True
             while is_going:
