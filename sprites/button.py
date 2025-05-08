@@ -1,5 +1,5 @@
 import pygame as pg
-from sprites.fonts import precompile_text
+from assets_lib.fonts import precompile_text
 from types_ import Point
 
 buttons = pg.sprite.Group()

@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 from modes import *
+from assets_lib.fonts import load_font
 
 pg.init()
 screen = pg.display.set_mode((1000,1000))
@@ -22,7 +23,7 @@ while True:
         if event.type == pg.QUIT:
             pg.quit()
             sys.exit()
-
+    screen.fill((6,19,24))
     if mode.mode == "game": game.frame()
     elif mode.mode == "menu": menu.frame()
 

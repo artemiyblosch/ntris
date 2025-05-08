@@ -9,7 +9,7 @@ def gen_figure(at : tuple[int,int] = (10,42), size_range : int = (3,13), width :
     return gen_raw_figure(at,randint(*size_range),width)
 
 def apply_to(map : Map, figure, tag : str = "a"):
-    color = (randint(20,150),randint(20,150),randint(20,150))
+    color = (randint(40,160),randint(40,160),randint(40,160))
     for i in figure:
         map[i] = Tile(tag,color)
     return map
