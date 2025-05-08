@@ -4,6 +4,7 @@ from time import sleep
 from utils import *
 from mapgen import *
 from assets_lib import *
+
 import sys
 
 class Game:
@@ -22,7 +23,15 @@ class Game:
         self.map = Map()
         self.can_hold = True
         apply_to(self.map,gen_figure(size_range=self.gen_range))
+
+        self.background = pg.Surface((21*16,42*16))
+        for i in range(21):
+            for j in range(42):
+                draw_on(self.background, "tile_block.jpg", (i*16,j*16),(14,14,14))
     
+    def convert(self,x,y):
+        return (x * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - y * 16)
+
     def frame(self):
         pg.draw.rect(self.screen,(111,111,111),(self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
         score_text = precompile_text(f"Score: {self.score}","default")
@@ -53,11 +62,10 @@ class Game:
             self.map.flip()
             self.stun_cooldown += 1
         
-        
+        draw_on(self.screen, self.background, self.zone_start)
+
         for i,v in enum(self.map):
-            if i[1] < 42:
-                converted_coords = (i[0] * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - i[1] * 16)
-                draw_on(self.screen, "tile_block.jpg", converted_coords, v.color)
+            if i[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*i), v.color)
         
         if self.map.can_move():
             if self.fall_timer.tick(self.fps): self.map.move()

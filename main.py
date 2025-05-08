@@ -23,7 +23,7 @@ while True:
         if event.type == pg.QUIT:
             pg.quit()
             sys.exit()
-    screen.fill((6,19,24))
+    screen.fill((12,12,12))
     if mode.mode == "game": game.frame()
     elif mode.mode == "menu": menu.frame()
 
