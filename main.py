@@ -11,11 +11,11 @@ gen_range = (3,10)
 fps = 60
 mode = ModeLink("menu")
 
-game = Game(screen,fps,gen_range)
+game = Game(screen,mode,fps,gen_range)
 menu = Menu(screen,mode)
 
-load_font("default", (None,36))
-load_font("big", (None,90))
+load_font("default", ('./assets/fonts/ARCADECLASSIC.TTF',36))
+load_font("big", ('./assets/fonts/ARCADECLASSIC.TTF',90))
 load_font("logo", (None,200))
 
 while True:

@@ -8,8 +8,9 @@ from assets_lib import *
 import sys
 
 class Game:
-    def __init__(self, screen, fps : int = 60, gen_range : tuple[int,int] = (3,11)):
+    def __init__(self, screen : pg.Surface, mode : ModeLink, fps : int = 60, gen_range : tuple[int,int] = (3,11)):
         self.fps = fps
+        self.mode = mode
         self.gen_range = gen_range
         self.screen = screen
         self.score = 0
@@ -34,7 +35,7 @@ class Game:
 
     def frame(self):
         pg.draw.rect(self.screen,(111,111,111),(self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
-        score_text = precompile_text(f"Score: {self.score}","default")
+        score_text = precompile_text(f"Score {self.score}","default")
         self.screen.blit(score_text,(500,600))
 
         keys = pg.key.get_pressed()
