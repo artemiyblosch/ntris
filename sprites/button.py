@@ -11,6 +11,8 @@ class Button(pg.sprite.Sprite):
         self.text = text
         self.onClick = onClick
         self.font = font
+        buttons.add(self)
+        self.selected = False
     
     def click_check(self, pos : Point):
         if self.rect.collidepoint(pos):
@@ -22,3 +24,8 @@ class Button(pg.sprite.Sprite):
         text = precompile_text(self.text, self.font)
         rect = text.get_rect(center=self.rect.center)
         screen.blit(text, rect)
+
+    @staticmethod
+    def selected_callback():
+        for i in buttons:
+            if i.selected: i.onClick()

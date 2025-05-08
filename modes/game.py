@@ -58,6 +58,9 @@ class Game:
         if keys[pg.K_UP] and self.map.can_rotate() and self.rotate_timer.tick():
             self.map.rotate()
             self.stun_cooldown += 1
+        if keys[pg.K_SPACE] and can_do:
+            while self.map.can_move(): self.map.move()
+            self.stun_cooldown = 20
         if keys[pg.K_v] and self.map.can_flip() and self.rotate_timer.tick():
             self.map.flip()
             self.stun_cooldown += 1
