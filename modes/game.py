@@ -4,6 +4,7 @@ from time import sleep
 from utils import *
 from mapgen import *
 from assets_lib import *
+from types_ import ModeLink
 
 import sys
 

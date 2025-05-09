@@ -2,11 +2,9 @@ import pygame as pg
 from sprites import *
 from types_ import ModeLink
 
-class Menu:
-    def __init__(self, screen : pg.Surface, mode_link : ModeLink):
+class Sandbox:
+    def __init__(self, screen : pg.Surface, mode_link : ModeLink, fps : int):
         self.screen = screen
-        self.play_button = Button(pg.Rect(450,450,150,100),"Play", lambda: self.mode_link.set_ref("game"))
-        self.play_button.selected = True
         self.mode_link = mode_link
     
     def frame(self):

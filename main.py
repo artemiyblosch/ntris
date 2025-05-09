@@ -2,6 +2,7 @@ import pygame as pg
 import sys
 from modes import *
 from assets_lib.fonts import load_font
+from types_ import ModeLink
 
 pg.init()
 screen = pg.display.set_mode((1000,1000))
@@ -9,7 +10,7 @@ clock = pg.time.Clock()
 
 gen_range = (3,10)
 fps = 60
-mode = ModeLink("menu")
+mode : ModeLink = Link[str]("menu")
 
 game = Game(screen,mode,fps,gen_range)
 menu = Menu(screen,mode)
