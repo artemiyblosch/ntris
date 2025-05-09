@@ -5,13 +5,12 @@ from types_ import ModeLink
 class Menu:
     def __init__(self, screen : pg.Surface, mode_link : ModeLink):
         self.screen = screen
-        self.play_button = Button(pg.Rect(450,450,150,100),"Sandbox", lambda: self.mode_link.set_ref("sandbox"))
+        self.play_button = Button(pg.Rect(350,450,250,100),"Sandbox", lambda: self.mode_link.set_ref("sandbox"))
         self.play_button.selected = True
         self.mode_link = mode_link
     
     def frame(self):
-        title_text = precompile_text(f"N-Tris","logo")
-        self.screen.blit(title_text,(300,50))
+        draw_on(self.screen, get_image("logo.png",True),(300,100))
         buttons.update(self.screen)
         pressed = pg.mouse.get_pressed()
         pos = pg.mouse.get_pos()

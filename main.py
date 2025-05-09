@@ -20,7 +20,6 @@ sandbox = Sandbox(screen,mode,fps)
 load_font("small", ('./assets/fonts/ARCADECLASSIC.TTF',16))
 load_font("default", ('./assets/fonts/ARCADECLASSIC.TTF',36))
 load_font("big", ('./assets/fonts/ARCADECLASSIC.TTF',90))
-load_font("logo", (None,200))
 
 while True:
     for event in pg.event.get():
