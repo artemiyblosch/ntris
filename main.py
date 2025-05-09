@@ -17,6 +17,7 @@ game = Game(screen,mode,fps,gen_range)
 menu = Menu(screen,mode)
 sandbox = Sandbox(screen,mode,fps)
 
+load_font("small", ('./assets/fonts/ARCADECLASSIC.TTF',16))
 load_font("default", ('./assets/fonts/ARCADECLASSIC.TTF',36))
 load_font("big", ('./assets/fonts/ARCADECLASSIC.TTF',90))
 load_font("logo", (None,200))
