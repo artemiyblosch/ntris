@@ -1,20 +1,29 @@
 import pygame as pg
 from sprites import *
-from types_ import ModeLink
+from modes.mode_obj import *
+from sprites import sprites
 
 class Sandbox:
-    def __init__(self, screen : pg.Surface, mode_link : ModeLink, fps : int):
+    def __init__(self, screen : pg.Surface, mode : Mode, fps : int):
         self.screen = screen
-        self.mode_link = mode_link
-        self.gen_slideA = Slider((200,200),200,range(3,20,1),4)
+        self.mode = mode
+        self.gen_slideA = Slider((200,400),200,range(3,21,1),4)
+        self.gen_slideB = Slider((200,450),200,range(3,21,1),10)
+        self.play_button = Button(\
+            pg.Rect(350,700,250,100),\
+            "Play",\
+            lambda: self.mode.set_mode("game").set_gen((self.gen_slideA.value,self.gen_slideB.value))\
+        ).select()
         self.fps = fps
     
+    def init(self):
+        sprites.empty()
+        sprites.add(self.gen_slideA)
+        sprites.add(self.gen_slideB)
+        sprites.add(self.play_button)
+
     def frame(self):
-        sliders.update(self.screen)
-        pressed = pg.mouse.get_pressed()
-        pos = pg.mouse.get_pos()
-        if pressed[0]:
-            [i.click_check(pos) for i in sliders]
+        draw_on(self.screen, precompile_text("Size Range", "default"),(200,300))
     
     def draw(self):
         self.frame()

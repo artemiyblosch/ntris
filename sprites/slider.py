@@ -3,8 +3,6 @@ from types_ import Point
 from utils import closest
 from assets_lib import precompile_text, draw_on, get_image
 
-sliders = pg.sprite.Group()
-
 class Slider(pg.sprite.Sprite):
     def __init__(self, pos : Point, width : int, values : range, init_value : int):
         super().__init__()
@@ -12,7 +10,6 @@ class Slider(pg.sprite.Sprite):
         self.width = width
         self.values = range(values.start,values.stop+1,values.step)
         self.value = init_value
-        sliders.add(self)
     
     def update(self, screen : pg.Surface):
         pg.draw.rect(screen, (255,255,255), (*self.pos, self.width, 8),2)
