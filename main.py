@@ -3,6 +3,7 @@ import sys
 from modes import *
 from assets_lib.fonts import load_font
 from types_ import ModeLink
+from Link import Link
 
 pg.init()
 screen = pg.display.set_mode((1000,1000))
@@ -14,6 +15,7 @@ mode : ModeLink = Link[str]("menu")
 
 game = Game(screen,mode,fps,gen_range)
 menu = Menu(screen,mode)
+sandbox = Sandbox(screen,mode,fps)
 
 load_font("default", ('./assets/fonts/ARCADECLASSIC.TTF',36))
 load_font("big", ('./assets/fonts/ARCADECLASSIC.TTF',90))
@@ -25,8 +27,9 @@ while True:
             pg.quit()
             sys.exit()
     screen.fill((12,12,12))
-    if mode.mode == "game": game.frame()
-    elif mode.mode == "menu": menu.frame()
+    if mode.ref == "game": game.frame()
+    elif mode.ref == "menu": menu.frame()
+    elif mode.ref == "sandbox": sandbox.frame()
 
     pg.display.flip()
     clock.tick(fps)

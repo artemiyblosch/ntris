@@ -1,5 +1,5 @@
 import typing as t
-from types_ import Point
+import types_ as tp
 from mapgen import Map
 
 def avg(lst : list[int]):
@@ -12,10 +12,10 @@ def enum(map : Map) -> list[list]:
             ret.append([(x,y),map[x,y]])
     return ret
 
-def rotate(p : Point, a : Point) -> Point:
+def rotate(p : tp.Point, a : tp.Point) -> tp.Point:
   return (-p[1]+a[1]+a[0],p[0]-a[0]+a[1])
 
-def flip(p : Point, a : int) -> Point:
+def flip(p : tp.Point, a : int) -> tp.Point:
     return (2*a-p[0],p[1])
 
 def filterD(d : dict):
@@ -24,14 +24,6 @@ def filterD(d : dict):
 G = t.TypeVar('G')
 def has(l : list[G], v : G):
     return bool(sum([1 for i in l if i == v]))
-
-T = t.TypeVar('T')
-class Link(t.Generic[T]):
-    def __init__(self, ref : T):
-        self.ref = ref
-    
-    def set_ref(self,ref : T):
-        self.ref = ref
 
 def closest(arr : list[int], num : int) -> int:
     return min([(abs(i-num),i) for i in arr], key=lambda a: a[0])[1]

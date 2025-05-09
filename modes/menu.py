@@ -5,7 +5,7 @@ from types_ import ModeLink
 class Menu:
     def __init__(self, screen : pg.Surface, mode_link : ModeLink):
         self.screen = screen
-        self.play_button = Button(pg.Rect(450,450,150,100),"Play", lambda: self.mode_link.set_ref("game"))
+        self.play_button = Button(pg.Rect(450,450,150,100),"Sandbox", lambda: self.mode_link.set_ref("sandbox"))
         self.play_button.selected = True
         self.mode_link = mode_link
     
