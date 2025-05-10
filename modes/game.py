@@ -28,7 +28,7 @@ class Game:
         self.background = pg.Surface((21*16,42*16))
         for i in range(21):
             for j in range(42):
-                draw_on(self.background, "tile_block.jpg", (i*16,j*16),(14,14,14))
+                draw_on(self.background, "tile_block.jpg", (i*16,j*16), col.bg)
     
     def init(self):
         sprites.empty()
@@ -38,7 +38,7 @@ class Game:
         return (x * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - y * 16)
 
     def frame(self):
-        pg.draw.rect(self.screen,(111,111,111),(self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
+        pg.draw.rect(self.screen, col.borders, (self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
         score_text = precompile_text(f"Score {self.score}","default")
         self.screen.blit(score_text,(500,600))
 
@@ -78,7 +78,7 @@ class Game:
             self.paused = not self.paused
             sleep(0.1)
         if self.paused: 
-            pg.draw.rect(self.screen,(128,128,128),(0,0,1000,1000))
+            pg.draw.rect(self.screen,col.bg,(0,0,1000,1000))
             return
 
         if keys[pg.K_RIGHT] and self.map.can_move(direction=(1,0)) and can_do:

@@ -2,6 +2,7 @@ import pygame as pg
 from assets_lib.fonts import precompile_text
 from types_ import Point
 from sprites.all import sprites
+import colors as col
 
 class Button(pg.sprite.Sprite):
     def __init__(self, rect : pg.Rect, text : str, onClick, font : str = "default", border : int = 10):
@@ -22,9 +23,10 @@ class Button(pg.sprite.Sprite):
         return self
 
     def update(self, screen : pg.Surface):
-        pg.draw.rect(screen, (255,255,255), self.rect, self.border, 2)
+        color = col.selected if self.selected else col.borders
+        pg.draw.rect(screen, color, self.rect, self.border, 2)
 
-        text = precompile_text(self.text, self.font)
+        text = precompile_text(self.text, self.font, color)
         rect = text.get_rect(center=self.rect.center)
         screen.blit(text, rect)
 

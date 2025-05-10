@@ -2,6 +2,7 @@ import pygame as pg
 import sys
 from modes import *
 from assets_lib.fonts import load_font
+import colors as col
 
 def mode_obj(mode : Mode):
     if mode.mode == "sandbox": return sandbox
@@ -31,7 +32,7 @@ while True:
         if event.type == pg.QUIT:
             pg.quit()
             sys.exit()
-    screen.fill((12,12,12))
+    screen.fill(col.dark)
 
     if mode.init and mode.mode == "game":
         game = Game(screen,mode,fps)

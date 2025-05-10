@@ -2,6 +2,7 @@ import pygame as pg
 from types_ import Point
 from utils import closest
 from assets_lib import precompile_text, draw_on, get_image
+import colors as col
 
 class Slider(pg.sprite.Sprite):
     def __init__(self, pos : Point, width : int, values : range, init_value : int):
@@ -12,18 +13,18 @@ class Slider(pg.sprite.Sprite):
         self.value = init_value
     
     def update(self, screen : pg.Surface):
-        pg.draw.rect(screen, (255,255,255), (*self.pos, self.width, 8),2)
+        pg.draw.rect(screen, col.borders, (*self.pos, self.width, 8),2)
         draw_on(screen,get_image("slider_h.jpg"),self.get_selector_rect().topleft)
 
-        start = precompile_text(str(self.values.start), "small")
+        start = precompile_text(str(self.values.start), "small", col.borders)
         s_rect = start.get_rect(center=(self.pos[0], self.pos[1] + 25))
         screen.blit(start,s_rect)
 
-        end = precompile_text(str(self.values.stop - 1), "small")
+        end = precompile_text(str(self.values.stop - 1), "small", col.borders)
         e_rect = start.get_rect(center=(self.pos[0] - 8 + self.width, self.pos[1] + 25))
         screen.blit(end,e_rect)
 
-        value = precompile_text(str(self.value), "small")
+        value = precompile_text(str(self.value), "small", (255,255,255))
         v_rect = start.get_rect(center=(self.pos[0] - 8 + self.width / 2, self.pos[1] - 25))
         screen.blit(value,v_rect)
     

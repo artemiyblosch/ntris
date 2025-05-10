@@ -10,5 +10,5 @@ def get_font(name : str):
 
 texts = {}
 def precompile_text(text : str, font_name : str, color : pg.color.Color = (255,255,255)):
-    if (text, font_name) not in texts: texts[(text, font_name)] = get_font(font_name).render(text, False, color)
-    return texts[(text, font_name)]
+    if (text, font_name, color) not in texts: texts[(text, font_name,color)] = get_font(font_name).render(text, False, color)
+    return texts[(text, font_name, color)]
