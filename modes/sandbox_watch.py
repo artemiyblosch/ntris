@@ -56,7 +56,7 @@ class Sandview:
 
     def init(self):
         sprites.empty()
-        modes = resolve_saves()
+        modes : list[tuple[Mode,int]] = resolve_saves()
         for i,world in enumerate(modes):
             card_start_x = ZONE_START[0]+(i%9)*ZONE_MARGINS[0]
             card_start_y = ZONE_START[1]+(i//9)*ZONE_MARGINS[1]
@@ -86,6 +86,12 @@ class Sandview:
                          f"{max_score}",
                          "small"
                 )),
+                add(Button(
+                    pg.Rect(card_start_x+10, card_start_y + ZONE_SIZE[1] - 90, ZONE_SIZE[0] - 20, 40),
+                    "Delete",
+                    self.delete_entry_c(mode.sandbox_entry),
+                    border=4
+                )),
             ])
         
         card_start_x = ZONE_START[0]+(len(modes)%9)*ZONE_MARGINS[0]
@@ -99,6 +105,14 @@ class Sandview:
 
         self.select_world(0)
         sleep(1/self.fps*10)
+    
+    def delete_entry_c(self, entry : int):
+        def __():
+            with open("./save/sandbox.txt", "r") as file: entries = file.read().split("\n")
+            del entries[entry]
+            with open("./save/sandbox.txt", "w") as file: file.write("\n".join(entries))
+            self.init()
+        return __
     
 def resolve_saves():
     with open("./save/sandbox.txt", "r") as file: modes = file.read()
