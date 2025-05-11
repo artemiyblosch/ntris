@@ -18,6 +18,7 @@ class Sandview:
         self.world_cards : list[list[pg.sprite.Sprite]] = []
         self.selected_world = 0
         self.move_timer = Timer(framerate=10)
+        self.go_back_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.mode.set_mode("menu"),"small",2)
     
     def frame(self):
         keys = pg.key.get_pressed()
@@ -56,6 +57,7 @@ class Sandview:
 
     def init(self):
         sprites.empty()
+        sprites.add(self.go_back_button)
         modes : list[tuple[Mode,int]] = resolve_saves()
         for i,world in enumerate(modes):
             card_start_x = ZONE_START[0]+(i%9)*ZONE_MARGINS[0]
@@ -111,6 +113,7 @@ class Sandview:
             with open("./save/sandbox.txt", "r") as file: entries = file.read().split("\n")
             del entries[entry]
             with open("./save/sandbox.txt", "w") as file: file.write("\n".join(entries))
+            self.world_cards = []
             self.init()
         return __
     
