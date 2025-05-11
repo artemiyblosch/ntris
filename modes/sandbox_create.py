@@ -28,10 +28,10 @@ class Sandbox:
         draw_on(self.screen, precompile_text("Size Range", "default", col.selected),(200,300))
     
     def play(self):
-        self.mode.set_mode("game").set_gen((self.gen_slideA.value,self.gen_slideB.value))
+        self.mode.set_mode("game").set_gen((self.gen_slideA.value,self.gen_slideB.value)).set_sandbox(self.mode.sandbox_entry)
 
         with open("./save/sandbox.txt", "a") as file:
-            file.write(f"\n{self.mode.gen_range[0]}-{self.mode.gen_range[1]},0")
+            file.write(f"{'\n' if self.mode.sandbox_entry != 0 else ''}{self.mode.gen_range[0]}-{self.mode.gen_range[1]},0")
     
     def draw(self):
         self.frame()
