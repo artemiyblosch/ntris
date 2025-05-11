@@ -105,7 +105,7 @@ def resolve_saves():
     if modes == "": return []
     
     modes = modes.split("\n")
-    modes = [parse_world(v,i) for i,v in enumerate(modes)]
+    modes = [parse_world(v,i) for i,v in enumerate(modes) if v != ""]
     return modes
 
 def parse_world(world : str, entry : int) -> Mode:
