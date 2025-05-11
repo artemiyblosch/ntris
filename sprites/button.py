@@ -22,6 +22,10 @@ class Button(pg.sprite.Sprite):
         self.selected = True
         return self
 
+    def unselect(self):
+        self.selected = False
+        return self
+
     def update(self, screen : pg.Surface):
         color = col.selected if self.selected else col.borders
         pg.draw.rect(screen, color, self.rect, self.border, 2)

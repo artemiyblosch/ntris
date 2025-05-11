@@ -19,7 +19,7 @@ class Game:
         self.move_timer = Timer(framerate=13)
         self.rotate_timer = Timer(framerate=9)
         self.pause_timer = Timer(framerate=3)
-        self.return_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.mode.set_mode("menu"),"small",2).select()
+        self.return_button = Button(pg.Rect(10,10,30,30),"X", self.ret_back(),"small",2).select()
         self.zone_start = (110,4*32)
         self.paused = False
         self.map = Map()
@@ -30,6 +30,10 @@ class Game:
             for j in range(42):
                 draw_on(self.background, "tile_block.jpg", (i*16,j*16), col.bg)
     
+    def ret_back(self):
+        self.mode.set_mode("menu")
+        
+
     def init(self):
         sprites.empty()
         sprites.add(self.return_button)

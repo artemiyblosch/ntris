@@ -9,7 +9,7 @@ class Menu:
         self.play_button = Button(\
             pg.Rect(350,450,250,100),\
             "Sandbox",\
-            lambda: self.mode.set_mode("sandbox")\
+            lambda: self.mode.set_mode("wview")\
         )
         self.play_button.selected = True
         self.mode = mode
