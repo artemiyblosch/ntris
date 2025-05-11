@@ -101,9 +101,9 @@ class Sandview:
         sleep(1/self.fps*10)
     
 def resolve_saves():
-    if not os.path.isfile("./save/sandbox.txt"): f = open("./save/sandbox.txt", "xr")
-    else: f = open("./save/sandbox.txt", "r")
-    with f as file: modes = file.read()
+    with open("./save/sandbox.txt", "r") as file: modes = file.read()
+    if modes == "": return []
+    
     modes = modes.split("\n")
     modes = [parse_world(v,i) for i,v in enumerate(modes)]
     return modes

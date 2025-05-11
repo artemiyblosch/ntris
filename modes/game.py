@@ -35,11 +35,8 @@ class Game:
         self.mode.set_mode("menu")
         if self.mode.sandbox_entry == -1: return
 
-        if not os.path.isfile("./save/sandbox.txt"): f = open("./save/sandbox.txt", "xr")
-        else: f = open("./save/sandbox.txt", "r")
-
-        with f as file:
-            f_c = f.read().split("\n")
+        with open("./save/sandbox.txt", "r") as file:
+            f_c = file.read().split("\n")
         
         entry = f_c[self.mode.sandbox_entry].split(",")
         entry[1] = str(self.score) if self.score > int(entry[1]) else entry[1]
