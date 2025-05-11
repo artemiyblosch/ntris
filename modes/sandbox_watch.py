@@ -94,7 +94,7 @@ class Sandview:
         self.world_cards.append(add(Button(
             pg.Rect(card_start_x, card_start_y, *ZONE_SIZE),
             "+",
-            self.ch_mode_c(Mode("sandbox"))
+            self.ch_mode_c(Mode("sandbox").set_sandbox(len(modes)))
         )))
 
         self.select_world(0)
@@ -105,13 +105,13 @@ def resolve_saves():
     else: f = open("./save/sandbox.txt", "r")
     with f as file: modes = file.read()
     modes = modes.split("\n")
-    modes = [parse_world(i) for i in modes]
+    modes = [parse_world(v,i) for i,v in enumerate(modes)]
     return modes
 
-def parse_world(world : str) -> Mode:
+def parse_world(world : str, entry : int) -> Mode:
     gen_range,max_score = world.split(",")
     gen_range = tuple([int(i) for i in gen_range.split("-")])
-    return (Mode("game").set_gen(gen_range), max_score)
+    return (Mode("game").set_gen(gen_range).set_sandbox(entry), max_score)
 
 def add(obj : pg.sprite.Sprite) -> pg.sprite.Sprite:
     sprites.add(obj)

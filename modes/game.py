@@ -6,6 +6,7 @@ from mapgen import *
 from assets_lib import *
 from modes.mode_obj import Mode
 
+import os
 import sys
 
 class Game:
@@ -19,7 +20,7 @@ class Game:
         self.move_timer = Timer(framerate=13)
         self.rotate_timer = Timer(framerate=9)
         self.pause_timer = Timer(framerate=3)
-        self.return_button = Button(pg.Rect(10,10,30,30),"X", self.ret_back(),"small",2).select()
+        self.return_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.ret_back(),"small",2).select()
         self.zone_start = (110,4*32)
         self.paused = False
         self.map = Map()
@@ -32,7 +33,22 @@ class Game:
     
     def ret_back(self):
         self.mode.set_mode("menu")
+        if self.mode.sandbox_entry == -1: return
+
+        if not os.path.isfile("./save/sandbox.txt"): f = open("./save/sandbox.txt", "xr")
+        else: f = open("./save/sandbox.txt", "r")
+
+        with f as file:
+            f_c = f.read().split("\n")
         
+        entry = f_c[self.mode.sandbox_entry].split(",")
+        entry[1] = str(self.score) if self.score > int(entry[1]) else entry[1]
+        entry = ",".join(entry)
+        f_c[self.mode.sandbox_entry] = entry
+        f_c = "\n".join(f_c)
+
+        with open("./save/sandbox.txt", "w") as file:
+            file.write(f_c)
 
     def init(self):
         sprites.empty()

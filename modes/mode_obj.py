@@ -10,6 +10,10 @@ class Mode:
         self.mode = mode
         self.init = init
         return self
+    
+    def set_sandbox(self : Self, entry : int):
+        self.sandbox_entry = entry
+        return self
 
     def set_gen(self : Self, gen_range : tuple[int,int]):
         if gen_range[1] < gen_range[0]:

@@ -14,7 +14,7 @@ class Sandbox:
         self.play_button = Button(
             pg.Rect(350,700,250,100),
             "Play",
-            lambda: self.mode.set_mode("game").set_gen((self.gen_slideA.value,self.gen_slideB.value))
+            lambda: self.play()
         ).select()
         self.fps = fps
     
@@ -34,7 +34,7 @@ class Sandbox:
         self.mode.set_mode("game").set_gen((self.gen_slideA.value,self.gen_slideB.value))
 
         with f as file:
-            file.write(f"{self.mode.gen_range[0]}-{self.mode.gen_range[1]},0")
+            file.write(f"\n{self.mode.gen_range[0]}-{self.mode.gen_range[1]},0")
     
     def draw(self):
         self.frame()
