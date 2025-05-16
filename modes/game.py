@@ -63,9 +63,10 @@ class Game:
         self.move()
         
         draw_on(self.screen, self.background, self.zone_start)
-
         for i,v in enum(self.map):
             if i[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*i), v.color)
+        
+        self.draw_next_figure()
         
         if self.map.can_move():
             if self.fall_timer.tick(self.fps): self.map.move()
@@ -77,10 +78,11 @@ class Game:
                     pg.quit()
                     sys.exit()
             self.apply_next_figure()
-
             self.contract_full_lines()
+
         self.stun_cooldown -= 1
 
+    def 
     def apply_next_figure(self):
         apply_to(self.map,self.next_figure)
         self.next_figure = gen_figure(size_range=self.mode.gen_range)
