@@ -24,6 +24,7 @@ class Game:
         self.zone_start = (110,4*32)
         self.paused = False
         self.map = Map()
+        self.next_figure = gen_figure(size_range=self.mode.gen_range)
         apply_to(self.map,gen_figure(size_range=self.mode.gen_range))
 
         self.background = pg.Surface((21*16,42*16))
@@ -75,17 +76,25 @@ class Game:
                 if self.map[i,41] != None:
                     pg.quit()
                     sys.exit()
-            apply_to(self.map,gen_figure(size_range=self.mode.gen_range))
-            self.score += 1
-            is_going = True
-            while is_going:
-                is_going = False
-                for i in range(41):
-                    if not has(self.map.get_line(i),None):
-                        self.score += 10 
-                        self.map.delete_line(i)
-                        is_going = True
+            self.apply_next_figure()
+
+            self.contract_full_lines()
         self.stun_cooldown -= 1
+
+    def apply_next_figure(self):
+        apply_to(self.map,self.next_figure)
+        self.next_figure = gen_figure(size_range=self.mode.gen_range)
+        self.score += 1
+    
+    def contract_full_lines(self):
+        is_going = True
+        while is_going:
+            is_going = False
+            for i in range(41):
+                if not has(self.map.get_line(i),None):
+                    self.score += 10 
+                    self.map.delete_line(i)
+                    is_going = True
 
     def move(self):
         keys = pg.key.get_pressed()
