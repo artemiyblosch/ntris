@@ -63,6 +63,8 @@ class Game:
         self.move()
         
         draw_on(self.screen, self.background, self.zone_start)
+        draw_on(self.screen, get_fig_preview(self.next_figure), (800,300))
+
         for i,v in enum(self.map):
             if i[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*i), v.color)
         
@@ -82,7 +84,6 @@ class Game:
 
         self.stun_cooldown -= 1
 
-    def 
     def apply_next_figure(self):
         apply_to(self.map,self.next_figure)
         self.next_figure = gen_figure(size_range=self.mode.gen_range)
