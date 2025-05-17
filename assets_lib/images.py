@@ -1,5 +1,6 @@
 import pygame as pg
 from types_ import Point
+from copy import deepcopy
 
 def get_image(path : str, alpha : bool = False) -> pg.Surface:
     if alpha:
@@ -8,7 +9,9 @@ def get_image(path : str, alpha : bool = False) -> pg.Surface:
 
 def draw_on(screen : pg.Surface, image : str | pg.Surface, at : Point, tint : pg.Color | None = None):
     if isinstance(image,str): img = get_image(image)
-    else: img = image
+    else: 
+        img = pg.Surface((image.get_rect().width, image.get_rect().height))
+        img.blit(image,image.get_rect())
     
     if tint != None:
         img.fill(tint, special_flags=pg.BLEND_MULT)

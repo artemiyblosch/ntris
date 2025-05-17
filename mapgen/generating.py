@@ -1,19 +1,13 @@
-from mapgen.map import *
 from random import randint, choice
-from assets_lib import get_image,draw_on
-
+from mapgen.figure import Figure
 
 def gen_figure(at : tuple[int,int] = (10,42), size_range : int = (3,13), width : int = 21, figure : str = "a"):
-    if randint(1,50) == 1: return [at]
-    if randint(1,30) == 1: return [at,(at[0],at[1]+1)]
-    if randint(1,1000) == 1: return [(i,at[1]) for i in range(width)]
-    return gen_raw_figure(at,randint(*size_range),width)
+    color = (randint(40,150), randint(40,150), randint(40,150))
 
-def apply_to(map : Map, figure, tag : str = "a"):
-    color = (randint(40,160),randint(40,160),randint(40,160))
-    for i in figure:
-        map[i] = Tile(tag,color)
-    return map
+    if randint(1,50) == 1: return Figure([at], color)
+    if randint(1,30) == 1: return Figure([at,(at[0],at[1]+1)],color)
+    if randint(1,1000) == 1: return Figure([(i,at[1]) for i in range(width)],color)
+    return gen_raw_figure(at,randint(*size_range),width)
 
 def gen_raw_figure(at : tuple[int,int] = (10,42), size : int = 4, width : int = 21):
     coords = [at]
@@ -30,16 +24,4 @@ def gen_raw_figure(at : tuple[int,int] = (10,42), size : int = 4, width : int = 
     if randint(1,10) == 1:
         coords = [(at[0],at[1]+i) for i in range(size)]
     
-    return coords
-
-def get_fig_preview(fig) -> pg.Surface:
-    factor = 50/max(\
-        max(fig, key = lambda a: a[0])[0] - min(fig, key = lambda a: a[0])[0],\
-        max(fig, key = lambda a: a[1])[1] - min(fig, key = lambda a: a[1])[1],\
-    )
-    fig_surf = pg.Surface((50,50))
-    tile = get_image("tile_block.jpg")
-    tile = pg.transform.scale_by(tile,factor/16)
-    for t in fig:
-        draw_on(fig_surf,tile,(t[0]*factor,t[1]*factor))
-    return fig_surf
+    return Figure(coords, (randint(40,150), randint(40,150), randint(40,150)))
