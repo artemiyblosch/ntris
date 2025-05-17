@@ -1,5 +1,6 @@
 from mapgen.map import *
 from random import randint, choice
+from assets_lib import get_image,draw_on
 
 
 def gen_figure(at : tuple[int,int] = (10,42), size_range : int = (3,13), width : int = 21, figure : str = "a"):
@@ -30,3 +31,15 @@ def gen_raw_figure(at : tuple[int,int] = (10,42), size : int = 4, width : int = 
         coords = [(at[0],at[1]+i) for i in range(size)]
     
     return coords
+
+def get_fig_preview(fig) -> pg.Surface:
+    factor = 50/max(\
+        max(fig, key = lambda a: a[0])[0] - min(fig, key = lambda a: a[0])[0],\
+        max(fig, key = lambda a: a[1])[1] - min(fig, key = lambda a: a[1])[1],\
+    )
+    fig_surf = pg.Surface((50,50))
+    tile = get_image("tile_block.jpg")
+    tile = pg.transform.scale_by(tile,factor/16)
+    for t in fig:
+        draw_on(fig_surf,tile,(t[0]*factor,t[1]*factor))
+    return fig_surf
