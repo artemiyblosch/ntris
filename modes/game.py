@@ -6,7 +6,6 @@ from mapgen import *
 from assets_lib import *
 from modes.mode_obj import Mode
 
-import os
 import sys
 
 class Game:
@@ -21,6 +20,7 @@ class Game:
         self.rotate_timer = Timer(framerate=9)
         self.pause_timer = Timer(framerate=3)
         self.return_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.ret_back(),"small",2).select()
+        self.score_text = Text((500,600),f"Score {self.score}")
         self.zone_start = (110,4*32)
         self.paused = False
         self.map = Map()
@@ -51,14 +51,13 @@ class Game:
     def init(self):
         sprites.empty()
         sprites.add(self.return_button)
+        sprites.add(self.score_text)
 
     def convert(self,x,y):
         return (x * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - y * 16)
 
     def frame(self):
         pg.draw.rect(self.screen, col.borders, (self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
-        score_text = precompile_text(f"Score {self.score}","default")
-        self.screen.blit(score_text,(500,600))
 
         self.move()
         
@@ -74,9 +73,7 @@ class Game:
         elif self.stun_cooldown < 0:
             self.map.remove_figure_status()
             for i in range(21):
-                if self.map[i,41] != None:
-                    pg.quit()
-                    sys.exit()
+                if self.map[i,41] != None: self.ret_back()
             self.apply_next_figure()
             self.contract_full_lines()
 
@@ -86,6 +83,7 @@ class Game:
         self.next_figure.apply_to(self.map)
         self.next_figure = gen_figure(size_range=self.mode.gen_range)
         self.score += 1
+        self.score_text.ch_text(f"Score {self.score}")
     
     def contract_full_lines(self):
         is_going = True
@@ -93,7 +91,8 @@ class Game:
             is_going = False
             for i in range(41):
                 if not has(self.map.get_line(i),None):
-                    self.score += 10 
+                    self.score += 10
+                    self.score_text.ch_text(f"Score {self.score}")
                     self.map.delete_line(i)
                     is_going = True
 

@@ -5,7 +5,7 @@ def load_font(name : str, args):
     fonts[name] = pg.font.Font(*args)
 
 def get_font(name : str):
-    if name not in fonts: return fonts["default"]
+    if name not in fonts: return pg.font.Font('./assets/fonts/JOYSTIX.otf',34)
     return fonts[name]
 
 texts = {}

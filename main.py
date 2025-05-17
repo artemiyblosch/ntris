@@ -30,6 +30,7 @@ load_font("giant", ('./assets/fonts/JOYSTIX.otf',160))
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
+            if mode.mode == "game": game.ret_back()
             pg.quit()
             sys.exit()
     screen.fill(col.dark)
