@@ -1,11 +1,8 @@
 import utils as u
 import pygame as pg
 from types_ import Point
-
-class Tile:
-    def __init__(self, figure : str | None = None, color : pg.Color = (127,127,127)):
-        self.figure = figure
-        self.color = color
+from mapgen.figure import Figure
+from mapgen.tile import Tile
 
 class Map:
     def __init__(self):
@@ -31,23 +28,23 @@ class Map:
         if key[1] not in self.map[key[0]]: return
         del self.map[key[0]][key[1]]
 
-    def seek_figure(self, figure : str = "a"):
+    def seek_figure(self, figure : str = "a") -> Figure:
         raw_map = [[(i,j) for j in self.map[i] if self[i,j] != None and self[i,j].figure == figure] for i in self.map]
-        return [x for xs in raw_map for x in xs]
+        raw_map = [i for i in raw_map if i != []]
+        return Figure((coords:=[x for xs in raw_map for x in xs]),self[coords[0]].color if coords != [] else (0,0,0))
     
     def __contains__(self, item : Point):
         return item[0] in self.map and item[1] in self.map[item[0]]
 
     def move(self, figure : str = "a", direction : Point = (0,-1)):
-        f_coords = self.seek_figure(figure)
-        color = self[f_coords[0]].color
+        f_coords, color = (fig := self.seek_figure(figure)).figure, fig.color
         for i in f_coords:
             del self[i]
         for i in f_coords:
             self[i[0] + direction[0], i[1] + direction[1]] = Tile(figure, color)
     
     def can_move(self, figure : str = "a", direction : Point = (0,-1), width = 21):
-        f_coords = self.seek_figure(figure)
+        f_coords = self.seek_figure(figure).figure
         f_coords = [(i[0] + direction[0], i[1] + direction[1]) for i in f_coords]
         return self.are_valid_coords(f_coords)
     
@@ -57,8 +54,8 @@ class Map:
                 self[i,j] = Tile(None if self[i,j].figure == figure else self[i,j].figure,self[i,j].color)
 
     def rotate(self, figure : str = "a"):
-        f_coords = self.seek_figure(figure)
-        color = self[f_coords[0]].color
+        f_coords, color = (fig := self.seek_figure(figure)).figure, fig.color
+
         center = (round(u.avg([i[0] for i in f_coords])), round(u.avg([i[1] for i in f_coords])))
         for i in f_coords:
             del self[i]
@@ -75,8 +72,8 @@ class Map:
         return True
     
     def rotate(self, figure : str = "a"):
-        f_coords = self.seek_figure(figure)
-        color = self[f_coords[0]].color
+        f_coords, color = (fig := self.seek_figure(figure)).figure, fig.color
+
         center = (round(u.avg([i[0] for i in f_coords])), round(u.avg([i[1] for i in f_coords])))
         for i in f_coords:
             del self[i]
@@ -84,14 +81,14 @@ class Map:
             self[u.rotate(i,center)] = Tile(figure, color)
     
     def can_rotate(self, figure : str = "a", width : int = 21):
-        f_coords = self.seek_figure(figure)
+        f_coords = self.seek_figure(figure).figure
         center = (round(u.avg([i[0] for i in f_coords])), round(u.avg([i[1] for i in f_coords])))
         f_coords = [u.rotate(i,center) for i in f_coords]
         return self.are_valid_coords(f_coords, figure, width)
     
     def flip(self, figure : str = "a"):
-        f_coords = self.seek_figure(figure)
-        color = self[f_coords[0]].color
+        f_coords, color = (fig := self.seek_figure(figure)).figure, fig.color
+
         center = round(u.avg([i[0] for i in f_coords]))
         for i in f_coords:
             del self[i]
@@ -99,7 +96,7 @@ class Map:
             self[u.flip(i,center)] = Tile(figure, color)
     
     def can_flip(self, figure : str = "a", width : int = 21):
-        f_coords = self.seek_figure(figure)
+        f_coords = self.seek_figure(figure).figure
         center = round(u.avg([i[0] for i in f_coords]))
         f_coords = [u.flip(i,center) for i in f_coords]
         return self.are_valid_coords(f_coords, figure, width)

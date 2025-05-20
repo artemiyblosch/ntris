@@ -6,23 +6,28 @@ from mapgen import *
 from assets_lib import *
 from modes.mode_obj import Mode
 
-import sys
-
 class Game:
     def __init__(self, screen : pg.Surface, mode : Mode, fps : int = 60):
         self.fps = fps
         self.mode = mode
         self.screen = screen
+
         self.score = 0
+        self.paused = False
+        self.holds : dict[int,Figure] = {}
+        self.held = False
+        
         self.stun_cooldown = 0
         self.fall_timer = Timer(framerate=8)
         self.move_timer = Timer(framerate=13)
         self.rotate_timer = Timer(framerate=9)
         self.pause_timer = Timer(framerate=3)
+
         self.return_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.ret_back(),"small",2).select()
-        self.score_text = Text((500,600),f"Score {self.score}")
+        self.score_text = Text((500,110),f"Score: {self.score}")
+        self.next_piece_text = Text((500,230),f"Next:")
+
         self.zone_start = (110,4*32)
-        self.paused = False
         self.map = Map()
         self.next_figure = gen_figure(size_range=self.mode.gen_range)
         gen_figure(size_range=self.mode.gen_range).apply_to(self.map)
@@ -32,37 +37,20 @@ class Game:
             for j in range(42):
                 draw_on(self.background, "tile_block.jpg", (i*16,j*16), col.bg)
     
-    def ret_back(self):
-        self.mode.set_mode("menu")
-        if self.mode.sandbox_entry == -1: return
-
-        with open("./save/sandbox.txt", "r") as file:
-            f_c = file.read().split("\n")
-        
-        entry = f_c[self.mode.sandbox_entry].split(",")
-        entry[1] = str(self.score) if self.score > int(entry[1]) else entry[1]
-        entry = ",".join(entry)
-        f_c[self.mode.sandbox_entry] = entry
-        f_c = "\n".join(f_c)
-
-        with open("./save/sandbox.txt", "w") as file:
-            file.write(f_c)
-
     def init(self):
         sprites.empty()
         sprites.add(self.return_button)
         sprites.add(self.score_text)
-
-    def convert(self,x,y):
-        return (x * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - y * 16)
-
+        sprites.add(self.next_piece_text)
+    
     def frame(self):
         pg.draw.rect(self.screen, col.borders, (self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
 
         self.move()
         
         draw_on(self.screen, self.background, self.zone_start)
-        draw_on(self.screen, self.next_figure.get_fig_preview(), (800,300))
+        draw_on(self.screen, self.next_figure.get_fig_preview(), (500,300))
+        pg.draw.rect(self.screen, col.borders, (495,295,110,110),5)
 
         for i,v in enum(self.map):
             if i[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*i), v.color)
@@ -79,11 +67,31 @@ class Game:
 
         self.stun_cooldown -= 1
 
+    def ret_back(self):
+        self.mode.set_mode("menu")
+        if self.mode.sandbox_entry == -1: return
+
+        with open("./save/sandbox.txt", "r") as file:
+            f_c = file.read().split("\n")
+        
+        entry = f_c[self.mode.sandbox_entry].split(",")
+        entry[1] = str(self.score) if self.score > int(entry[1]) else entry[1]
+        entry = ",".join(entry)
+        f_c[self.mode.sandbox_entry] = entry
+        f_c = "\n".join(f_c)
+
+        with open("./save/sandbox.txt", "w") as file:
+            file.write(f_c)
+
+    def convert(self,x,y):
+        return (x * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - y * 16)
+
     def apply_next_figure(self):
         self.next_figure.apply_to(self.map)
         self.next_figure = gen_figure(size_range=self.mode.gen_range)
         self.score += 1
         self.score_text.ch_text(f"Score {self.score}")
+        self.held = False
     
     def contract_full_lines(self):
         is_going = True
@@ -95,6 +103,24 @@ class Game:
                     self.score_text.ch_text(f"Score {self.score}")
                     self.map.delete_line(i)
                     is_going = True
+
+    def hold(self):
+        fig = self.map.seek_figure()
+        size = len(fig.figure)
+
+        #if size not in list(range(*self.mode.gen_range)): return
+
+        if size in self.holds:
+            self.holds[size].apply_pos((10,42))
+            self.holds[size].apply_to(self.map)
+        else:
+            self.next_figure.apply_to(self.map)
+            self.next_figure = gen_figure(size_range=self.mode.gen_range)
+        
+        self.holds[size] = fig
+        self.held = True
+        for i in fig.figure:
+            del self.map[i]
 
     def move(self):
         keys = pg.key.get_pressed()
@@ -125,3 +151,4 @@ class Game:
         if keys[pg.K_v] and self.map.can_flip() and can_rot:
             self.map.flip()
             self.stun_cooldown += 1
+        if keys[pg.K_c] and not self.held: self.hold()
