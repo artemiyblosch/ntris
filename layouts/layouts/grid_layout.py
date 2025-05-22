@@ -4,17 +4,10 @@ from layouts.decor.layouty import supports_layouts
 
 @supports_layouts
 class Grid:
-    def __init__(self, card_wh : Point, space_wh : Point):
+    def __init__(self, card_wh : Point = (0,0), space_wh : Point = (0,0), start : Point = (0,0)):
         self.card_w, self.card_h = card_wh
         self.space_w, self.space_h = space_wh
+        self.start_x, self.start_y = start
     
     def __getitem__(self, item : Point) -> Rect:
-        return Rect( (self.card_w+self.space_w)*item, (self.card_h+self.space_h)*item, self.card_w, self.card_h )
-    
-    @property
-    def card_wh(self):
-        return (self.card_w, self.card_h)
-    
-    @property
-    def space_wh(self):
-        return (self.space_w, self.space_h)
+        return Rect( (self.card_w+self.space_w)*item + self.start_x, (self.card_h+self.space_h)*item + self.start_y, self.card_w, self.card_h )

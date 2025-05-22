@@ -4,8 +4,8 @@ from layouts.observers.Observer import Observer
 meta_observer = Observer()
 
 class Layout(ABC):
-    @abstractmethod
     @property
+    @abstractmethod
     def observer() -> Observer:
         pass
     

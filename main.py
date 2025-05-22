@@ -3,6 +3,7 @@ import sys
 from modes import *
 from assets_lib.fonts import load_font
 import colors as col
+from layouts import meta_observer
 
 def mode_obj(mode : Mode):
     if mode.mode == "sandbox": return sandbox
@@ -11,7 +12,7 @@ def mode_obj(mode : Mode):
     if mode.mode == "game": return game
 
 pg.init()
-screen = pg.display.set_mode((1000,1000))
+screen = pg.display.set_mode((1000,1000), pg.RESIZABLE)
 clock = pg.time.Clock()
 select_timer = Timer(framerate=9)
 fps = 60
@@ -49,6 +50,10 @@ while True:
     if pressed[0]:
         [i.click_check(pos) for i in sprites]
     
+    meta_observer.observe({
+        "width": screen.get_width(),
+        "height": screen.get_height()
+    })
     mode_obj(mode).frame()
 
     keys = pg.key.get_pressed()
