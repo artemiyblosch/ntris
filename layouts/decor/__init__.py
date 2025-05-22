@@ -1,0 +1,1 @@
+from layouts.decor.layouty import supports_layouts

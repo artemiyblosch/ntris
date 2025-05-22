@@ -1,3 +1,3 @@
-from Link import Link
-type Point = tuple[int,int]
-type ModeLink = Link[str]
+from layouts.layouts.abs_layout import Layout
+
+type Point = tuple[int | Layout, int | Layout]
