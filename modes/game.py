@@ -23,7 +23,7 @@ class Game:
         self.rotate_timer = Timer(framerate=9)
         self.pause_timer = Timer(framerate=3)
 
-        self.return_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.ret_back(),"small",2).select()
+        self.return_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.ret_back(),"small",2)
         self.score_text = Text((500,110),f"Score: {self.score}")
         self.next_piece_text = Text((500,230),f"Next:")
 

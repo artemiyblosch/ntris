@@ -21,6 +21,7 @@ class Button(pg.sprite.Sprite):
             self.onClick()
     
     def select(self):
+        '''Selects your button'''
         self.selected = True
         return self
 

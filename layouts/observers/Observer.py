@@ -28,14 +28,15 @@ class Observer:
         for i in self.observants:
             i.update(**kwargs)
         
+        if self.children == None: return
         if self.old_args != kwargs:
             for i in self.children:
                 if i.depends == None:
-                    i.observe(kwargs)
+                    i.observe(**kwargs)
                     continue
-                if i.is_depend_triggered(self.old_args, kwargs): i.observe(kwargs)
+                if i.is_depend_triggered(self.old_args, kwargs): i.observe(**kwargs)
     
     def is_depend_triggered(self, old : dict, new : dict) -> bool:
         for i in self.depends:
-            if old[i] != new[i]: return True
+            if i not in old or old[i] != new[i]: return True
         return False

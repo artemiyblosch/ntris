@@ -50,10 +50,10 @@ while True:
     if pressed[0]:
         [i.click_check(pos) for i in sprites]
     
-    meta_observer.observe({
-        "width": screen.get_width(),
-        "height": screen.get_height()
-    })
+    meta_observer.observe(
+        width = screen.get_width(),
+        height = screen.get_height()
+    )
     mode_obj(mode).frame()
 
     keys = pg.key.get_pressed()
