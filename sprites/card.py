@@ -9,10 +9,11 @@ from layouts import Rect_Layout
 
 
 class Card(pg.sprite.Sprite):
-    def __init__(self, world : tuple[Mode,int], rect : Rect_Layout, mode_link):
+    def __init__(self, world : tuple[Mode,int], rect : Rect_Layout,  play_c, del_c):
         super().__init__()
         self.world = world
-        self.mode_link = mode_link
+        self.play_c = play_c
+        self.del_c = del_c
         self.card_left, self.card_top, self.card_width, self.card_height = rect
         self.card_sprites = pg.sprite.Group()
         self.border = self.add(Border(rect,4))
@@ -23,7 +24,7 @@ class Card(pg.sprite.Sprite):
         self.play_button = self.add(Button(
                     Rect_Layout(self.card_left + 10, self.card_top+self.card_height - 45, self.card_width - 20, 40),
                     "Play",
-                    self.ch_mode_c(self.world[0]),
+                    self.play_c,
                     border=4
                 )),
         self.sra_text = self.add(Text((self.card_left + 10, self.card_top + 65),
@@ -41,26 +42,12 @@ class Card(pg.sprite.Sprite):
         self.del_button = self.add(Button(
                     Rect_Layout(self.card_left + 10, self.card_top+self.card_height - 90, self.card_width - 20, 40),
                     "Delete",
-                    self.delete_entry_c(self.world[0].sandbox_entry),
+                    self.del_c,
                     border=4
                 ))
     
     def update(self,screen):
         self.card_sprites.update(screen)
-
-    def delete_entry_c(self, entry : int):
-        def __():
-            with open("./save/sandbox.txt", "r") as file: entries = file.read().split("\n")
-            del entries[entry]
-            with open("./save/sandbox.txt", "w") as file: file.write("\n".join(entries))
-            self.world_cards = []
-            self.init()
-        return __
-    
-    def ch_mode_c(self, mode : Mode):
-        def __():
-            self.mode_link.set_as(mode)
-        return __
 
     def add(self,obj : pg.sprite.Sprite) -> pg.sprite.Sprite:
         self.card_sprites.add(obj)

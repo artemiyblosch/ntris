@@ -20,7 +20,7 @@ class Sandview:
         self.go_back_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.mode.set_mode("menu"),"small",2)
         self.view_grid = Grid(
             (ViewScreen_Layout(0.2),ViewScreen_Layout(0,0.4)),
-            (ViewScreen_Layout(0.1),ViewScreen_Layout(0,0.025)),
+            (ViewScreen_Layout(0.01),ViewScreen_Layout(0,0.005)),
             (ViewScreen_Layout(0.2),ViewScreen_Layout(0,0.1))
         )
     
@@ -48,11 +48,17 @@ class Sandview:
         sprites.empty()
         sprites.add(self.go_back_button)
         modes : list[tuple[Mode,int]] = resolve_saves()
+        CARDS_ON_A_LINE = 3
         for i,world in enumerate(modes):
-            self.world_cards.append(add(Card(world,self.view_grid[i%7,i//7],self.mode)))
+            self.world_cards.append(add(Card(
+                world, 
+                self.view_grid[i%CARDS_ON_A_LINE, i//CARDS_ON_A_LINE],
+                self.ch_mode_c(world[0]),
+                self.delete_entry_c(i)
+            )))
 
         self.world_cards.append(add(Button(
-            self.view_grid[len(modes)%7,len(modes)//7],
+            self.view_grid[len(modes)%CARDS_ON_A_LINE,len(modes)//CARDS_ON_A_LINE],
             "+",
             self.ch_mode_c(Mode("sandbox").set_sandbox(len(modes)))
         )))
