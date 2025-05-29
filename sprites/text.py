@@ -2,18 +2,20 @@ import pygame as pg
 import colors as col
 from types_ import Point
 from assets_lib import precompile_text, draw_on
+from layouts import supports_layouts
 
+@supports_layouts
 class Text(pg.sprite.Sprite):
     def __init__(self, at : Point, text : str, font : str = "default", color : pg.Color = col.borders):
         super().__init__()
         self.text = text
         self.color = color
         self.font = font
-        self.at = at
+        self.pos_x, self.pos_y = at
         self.text_image = precompile_text(self.text, self.font, self.color)
     
     def update(self, screen : pg.Surface):
-        draw_on(screen, self.text_image,self.at)
+        draw_on(screen, self.text_image, (self.pos_x,self.pos_y))
     
     def click_check(self, pos : Point):
         pass

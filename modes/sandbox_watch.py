@@ -1,9 +1,9 @@
 import pygame as pg
 from sprites import *
 from modes.mode_obj import *
-from sprites import sprites,Timer
+from sprites import *
 import colors as col
-import os
+from layouts import Grid, ViewScreen_Layout
 from time import sleep
 
 ZONE_START = (100,100)
@@ -19,6 +19,11 @@ class Sandview:
         self.selected_world = 0
         self.move_timer = Timer(framerate=10)
         self.go_back_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.mode.set_mode("menu"),"small",2)
+        self.view_grid = Grid(
+            (ViewScreen_Layout(0.2),ViewScreen_Layout(0,0.4)),
+            (ViewScreen_Layout(0.05),ViewScreen_Layout(0,0.025)),
+            (ViewScreen_Layout(0.1),ViewScreen_Layout(0,0.1))
+        )
     
     def frame(self):
         keys = pg.key.get_pressed()
@@ -60,47 +65,10 @@ class Sandview:
         sprites.add(self.go_back_button)
         modes : list[tuple[Mode,int]] = resolve_saves()
         for i,world in enumerate(modes):
-            card_start_x = ZONE_START[0]+(i%9)*ZONE_MARGINS[0]
-            card_start_y = ZONE_START[1]+(i//9)*ZONE_MARGINS[1]
-            mode, max_score = world
-
-            self.world_cards.append([
-                add(Border(pg.Rect(card_start_x, card_start_y, *ZONE_SIZE),4)),
-                add(Button(
-                    pg.Rect(card_start_x+10, card_start_y + ZONE_SIZE[1] - 45, ZONE_SIZE[0] - 20, 40),
-                    "Play",
-                    self.ch_mode_c(mode),
-                    border=4
-                )),
-                add(Text((card_start_x + 10, card_start_y + 50),
-                         "Size Range:",
-                         "small"
-                )),
-                add(Text((card_start_x + 10, card_start_y + 65),
-                         f"{mode.gen_range[0]}-{mode.gen_range[1]}",
-                         "small"
-                )),
-                add(Text((card_start_x + 10, card_start_y + 90),
-                         f"Max Score:",
-                         "small"
-                )),
-                add(Text((card_start_x + 10, card_start_y + 105),
-                         f"{max_score}",
-                         "small"
-                )),
-                add(Button(
-                    pg.Rect(card_start_x+10, card_start_y + ZONE_SIZE[1] - 90, ZONE_SIZE[0] - 20, 40),
-                    "Delete",
-                    self.delete_entry_c(mode.sandbox_entry),
-                    border=4
-                )),
-            ])
-        
-        card_start_x = ZONE_START[0]+(len(modes)%9)*ZONE_MARGINS[0]
-        card_start_y = ZONE_START[1]+(len(modes)//9)*ZONE_MARGINS[1]
+            self.world_cards.append(Card(world,self.view_grid[divmod(i,7)]))
 
         self.world_cards.append(add(Button(
-            pg.Rect(card_start_x, card_start_y, *ZONE_SIZE),
+            self.view_grid[divmod(len(modes),7)],
             "+",
             self.ch_mode_c(Mode("sandbox").set_sandbox(len(modes)))
         )))
@@ -125,7 +93,7 @@ def resolve_saves():
     modes = [parse_world(v,i) for i,v in enumerate(modes) if v != ""]
     return modes
 
-def parse_world(world : str, entry : int) -> Mode:
+def parse_world(world : str, entry : int) -> tuple[Mode,int]:
     gen_range,max_score = world.split(",")
     gen_range = tuple([int(i) for i in gen_range.split("-")])
     return (Mode("game").set_gen(gen_range).set_sandbox(entry), max_score)

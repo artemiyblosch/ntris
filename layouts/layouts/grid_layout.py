@@ -1,6 +1,7 @@
 from types_ import Point
 from pygame import Rect
 from layouts.decor.layouty import supports_layouts
+from layouts.layouts.rect_layout import Rect_Layout
 
 @supports_layouts
 class Grid:
@@ -10,4 +11,4 @@ class Grid:
         self.start_x, self.start_y = start
     
     def __getitem__(self, item : Point) -> Rect:
-        return Rect( (self.card_w+self.space_w)*item[0] + self.start_x, (self.card_h+self.space_h)*item[1] + self.start_y, self.card_w, self.card_h )
+        return Rect_Layout( (self.card_w+self.space_w)*item[0] + self.start_x, (self.card_h+self.space_h)*item[1] + self.start_y, self.card_w, self.card_h )

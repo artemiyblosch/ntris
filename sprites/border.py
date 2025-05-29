@@ -1,7 +1,9 @@
 import pygame as pg
 import colors as col
 from types_ import Point
+from layouts import supports_layouts
 
+@supports_layouts
 class Border(pg.sprite.Sprite):
     def __init__(self, rect : pg.Rect, border : int = 10, color : pg.Color = col.borders):
         super().__init__()
