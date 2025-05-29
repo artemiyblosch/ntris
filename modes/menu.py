@@ -2,18 +2,19 @@ import pygame as pg
 from sprites import *
 from modes.mode_obj import Mode
 from sprites import sprites
-from layouts import Grid, ViewScreen_Layout, supports_layouts
+from layouts import ViewScreen_Layout, supports_layouts, Rect_Layout
 
 @supports_layouts
 class Menu:
     def __init__(self, screen : pg.Surface, mode : Mode):
         self.screen = screen
         self.play_button = Button(
-            (Grid(
-                (260,100),
-                (0,0),
-                (ViewScreen_Layout(0.5,offset=-130),ViewScreen_Layout(0,0.5,-130))
-            ),(0,0)),
+            Rect_Layout(
+                ViewScreen_Layout(0.5,offset=-130),
+                ViewScreen_Layout(0,0.5,-130),
+                260,
+                100
+            ),
             "Sandbox",
             lambda: self.mode.set_mode("wview")
         )

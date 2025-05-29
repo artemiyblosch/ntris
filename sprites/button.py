@@ -3,11 +3,11 @@ from assets_lib.fonts import precompile_text
 from types_ import Point
 from sprites.all import sprites
 import colors as col
-from layouts import Grid,supports_layouts
+from layouts import supports_layouts
 
 @supports_layouts
 class Button(pg.sprite.Sprite):
-    def __init__(self, rect : pg.Rect | tuple[Grid,Point], text : str, onClick, font : str = "default", border : int = 10):
+    def __init__(self, rect : pg.Rect, text : str, onClick, font : str = "default", border : int = 10):
         super().__init__()
         self.rect = rect
         self.text = text

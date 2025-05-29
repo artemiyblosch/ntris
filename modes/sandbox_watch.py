@@ -24,6 +24,7 @@ class Sandview:
             (ViewScreen_Layout(0.05),ViewScreen_Layout(0,0.025)),
             (ViewScreen_Layout(0.1),ViewScreen_Layout(0,0.1))
         )
+        print(self.view_grid[0,1])
     
     def frame(self):
         keys = pg.key.get_pressed()
@@ -36,24 +37,9 @@ class Sandview:
             self.select_world(self.selected_world)
     
     def select_world(self, world_n : int):
-        for i,world in enumerate(self.world_cards[:-1]):
-            if i == world_n:
-                world[0].color = col.selected
-                world[1].select()
-                world[2].ch_text(color=col.selected)
-                world[3].ch_text(color=col.selected)
-                world[4].ch_text(color=col.selected)
-                world[5].ch_text(color=col.selected)
-            else:
-                world[0].color = col.borders
-                world[1].unselect()
-                world[2].ch_text(color=col.borders)
-                world[3].ch_text(color=col.borders)
-                world[4].ch_text(color=col.borders)
-                world[5].ch_text(color=col.borders)
-
-        if world_n == len(self.world_cards) - 1: self.world_cards[-1].select()
-        else: self.world_cards[-1].unselect()
+        for i,world in enumerate(self.world_cards):
+            if i == world_n: world.select()
+            else: world.unselect()
 
     def ch_mode_c(self : Self, mode : Mode):
         def __():
@@ -65,10 +51,10 @@ class Sandview:
         sprites.add(self.go_back_button)
         modes : list[tuple[Mode,int]] = resolve_saves()
         for i,world in enumerate(modes):
-            self.world_cards.append(Card(world,self.view_grid[divmod(i,7)]))
+            self.world_cards.append(Card(world,self.view_grid[i//7,i%7]))
 
         self.world_cards.append(add(Button(
-            self.view_grid[divmod(len(modes),7)],
+            self.view_grid[len(modes)//7,len(modes)%7],
             "+",
             self.ch_mode_c(Mode("sandbox").set_sandbox(len(modes)))
         )))

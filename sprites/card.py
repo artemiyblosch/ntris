@@ -6,7 +6,7 @@ from sprites.text import *
 
 from modes.mode_obj import Mode
 
-@supports_layouts
+
 class Card(pg.sprite.Sprite):
     def __init__(self, world : tuple[Mode,int], rect : pg.Rect):
         self.world = world
@@ -52,3 +52,18 @@ class Card(pg.sprite.Sprite):
     def add(self,obj : pg.sprite.Sprite) -> pg.sprite.Sprite:
         self.card_sprites.add(obj)
         return obj
+    
+    def select(self):
+        self.border.color = col.selected
+        self.sr_text.ch_text(color=col.selected)
+        self.sra_text.ch_text(color=col.selected)
+        self.score_text.ch_text(color=col.selected)
+        self.max_text.ch_text(color=col.selected)
+        print(self.rect)
+    
+    def unselect(self):
+        self.border.color = col.borders
+        self.sr_text.ch_text(color=col.borders)
+        self.sra_text.ch_text(color=col.borders)
+        self.score_text.ch_text(color=col.borders)
+        self.max_text.ch_text(color=col.borders)
