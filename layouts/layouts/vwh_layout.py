@@ -27,13 +27,11 @@ class ViewScreen_Layout(Layout):
         return vw_lay_observer
     
     def __add__(self, other : Self | int) -> Self:
-        print(f"Adds {self} to {other}")
-        if isinstance(other,int):
+        if isinstance(other, int | float):
             return ViewScreen_Layout(self.vwp, self.vhp, self.offset + other)
-        return ViewScreen_Layout(self.vwp + other.vwp, self.vhp + self.vhp, self.offset + other.offset)
+        return ViewScreen_Layout(self.vwp + other.vwp, self.vhp + other.vhp, self.offset + other.offset)
 
     def __mul__(self, other : Self | int) -> Self:
-        print(f"Multiplies {self} to {other}")
         if isinstance(other,int):
             return ViewScreen_Layout(self.vwp * other, self.vhp * other, self.offset * other)
         return NotImplemented#return ViewScreen_Layout(self.vwp * other.vwp, self.vhp * self.vhp, self.offset * other.offset)

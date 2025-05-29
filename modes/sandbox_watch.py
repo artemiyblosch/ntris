@@ -2,7 +2,6 @@ import pygame as pg
 from sprites import *
 from modes.mode_obj import *
 from sprites import *
-import colors as col
 from layouts import Grid, ViewScreen_Layout
 from time import sleep
 
@@ -21,10 +20,9 @@ class Sandview:
         self.go_back_button = Button(pg.Rect(10,10,30,30),"X", lambda: self.mode.set_mode("menu"),"small",2)
         self.view_grid = Grid(
             (ViewScreen_Layout(0.2),ViewScreen_Layout(0,0.4)),
-            (ViewScreen_Layout(0.05),ViewScreen_Layout(0,0.025)),
-            (ViewScreen_Layout(0.1),ViewScreen_Layout(0,0.1))
+            (ViewScreen_Layout(0.1),ViewScreen_Layout(0,0.025)),
+            (ViewScreen_Layout(0.2),ViewScreen_Layout(0,0.1))
         )
-        print(self.view_grid[0,1])
     
     def frame(self):
         keys = pg.key.get_pressed()
@@ -51,7 +49,7 @@ class Sandview:
         sprites.add(self.go_back_button)
         modes : list[tuple[Mode,int]] = resolve_saves()
         for i,world in enumerate(modes):
-            self.world_cards.append(Card(world,self.view_grid[i//7,i%7]))
+            self.world_cards.append(add(Card(world,self.view_grid[i//7,i%7])))
 
         self.world_cards.append(add(Button(
             self.view_grid[len(modes)//7,len(modes)%7],

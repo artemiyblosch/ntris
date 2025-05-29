@@ -9,6 +9,7 @@ from modes.mode_obj import Mode
 
 class Card(pg.sprite.Sprite):
     def __init__(self, world : tuple[Mode,int], rect : pg.Rect):
+        super().__init__()
         self.world = world
         self.rect = rect
 
@@ -37,8 +38,8 @@ class Card(pg.sprite.Sprite):
                     border=4
                 ))
     
-    def update(self):
-        self.card_sprites.update()
+    def update(self,screen):
+        self.card_sprites.update(screen)
 
     def delete_entry_c(self, entry : int):
         def __():
@@ -59,7 +60,6 @@ class Card(pg.sprite.Sprite):
         self.sra_text.ch_text(color=col.selected)
         self.score_text.ch_text(color=col.selected)
         self.max_text.ch_text(color=col.selected)
-        print(self.rect)
     
     def unselect(self):
         self.border.color = col.borders
@@ -67,3 +67,5 @@ class Card(pg.sprite.Sprite):
         self.sra_text.ch_text(color=col.borders)
         self.score_text.ch_text(color=col.borders)
         self.max_text.ch_text(color=col.borders)
+    
+    def click_check(self, pos): pass
