@@ -49,10 +49,10 @@ class Sandview:
         sprites.add(self.go_back_button)
         modes : list[tuple[Mode,int]] = resolve_saves()
         for i,world in enumerate(modes):
-            self.world_cards.append(add(Card(world,self.view_grid[i//7,i%7])))
+            self.world_cards.append(add(Card(world,self.view_grid[i%7,i//7])))
 
         self.world_cards.append(add(Button(
-            self.view_grid[len(modes)//7,len(modes)%7],
+            self.view_grid[len(modes)%7,len(modes)//7],
             "+",
             self.ch_mode_c(Mode("sandbox").set_sandbox(len(modes)))
         )))

@@ -30,6 +30,11 @@ class ViewScreen_Layout(Layout):
         if isinstance(other, int | float):
             return ViewScreen_Layout(self.vwp, self.vhp, self.offset + other)
         return ViewScreen_Layout(self.vwp + other.vwp, self.vhp + other.vhp, self.offset + other.offset)
+    
+    def __sub__(self, other : Self | int) -> Self:
+        if isinstance(other, int | float):
+            return ViewScreen_Layout(self.vwp, self.vhp, self.offset - other)
+        return ViewScreen_Layout(self.vwp - other.vwp, self.vhp - other.vhp, self.offset - other.offset)
 
     def __mul__(self, other : Self | int) -> Self:
         if isinstance(other,int):

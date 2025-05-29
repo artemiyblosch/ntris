@@ -25,6 +25,9 @@ class Rect_Layout:
     
     def get(self, name):
         return object.__getattribute__(self,name)
+    
+    def __iter__(self):
+        return iter([self.get("left"),self.get("top"),self.get("width"),self.get("height")])
 
 class wrap:
     def __init__(self,value):
