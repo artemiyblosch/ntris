@@ -69,4 +69,6 @@ class Card(pg.sprite.Sprite):
         self.max_text.ch_text(color=col.borders)
         self.play_button[0].unselect()
     
-    def click_check(self, pos): pass
+    def click_check(self, pos):
+        self.play_button[0].click_check(pos)
+        self.del_button.click_check(pos)
