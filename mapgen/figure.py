@@ -44,3 +44,6 @@ class Figure:
     
     def apply_pos(self, pos : Point):
         self.figure = [(point[0]+pos[0], point[1]+pos[1]) for point in self.normalized().figure]
+    
+    def size(self):
+        return len(self.figure)

@@ -40,7 +40,7 @@ class Game:
         
         self.hold_grid = Grid(
             (100,100),
-            (10,5),
+            (20,40),
             (500,500)
         )
     
@@ -58,6 +58,7 @@ class Game:
         
         draw_on(self.screen, self.background, self.zone_start)
         draw_on(self.screen, self.next_figure.get_fig_preview(), (500,300))
+        draw_on(self.screen, precompile_text(f"{self.next_figure.size()}", "small", col.borders), (500,415))
         pg.draw.rect(self.screen, col.borders, (495,295,110,110),5)
 
         for i,v in enum(self.map):
@@ -79,8 +80,10 @@ class Game:
         for i,k in enumerate(self.holds.keys()):
             fig = self.holds[k]
             at = (self.hold_grid[i%2,i//2].left, self.hold_grid[i%2,i//2].top)
+
             draw_on(self.screen, fig.get_fig_preview(), at )
             pg.draw.rect(self.screen, col.borders, (at[0]-5, at[1]-5, 110, 110), 5)
+            draw_on(self.screen, precompile_text(f"{fig.size()}", "small", col.borders), (at[0], at[1] + 110))
 
     def ret_back(self):
         self.mode.set_mode("menu")
