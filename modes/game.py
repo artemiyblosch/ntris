@@ -5,6 +5,7 @@ from utils import *
 from mapgen import *
 from assets_lib import *
 from modes.mode_obj import Mode
+from layouts import Grid, ViewScreen_Layout
 
 class Game:
     def __init__(self, screen : pg.Surface, mode : Mode, fps : int = 60):
@@ -36,6 +37,12 @@ class Game:
         for i in range(21):
             for j in range(42):
                 draw_on(self.background, "tile_block.jpg", (i*16,j*16), col.bg)
+        
+        self.hold_grid = Grid(
+            (100,100),
+            (10,5),
+            (500,500)
+        )
     
     def init(self):
         sprites.empty()
@@ -47,6 +54,7 @@ class Game:
         pg.draw.rect(self.screen, col.borders, (self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
 
         self.move()
+        self.draw_holds()
         
         draw_on(self.screen, self.background, self.zone_start)
         draw_on(self.screen, self.next_figure.get_fig_preview(), (500,300))
@@ -66,6 +74,13 @@ class Game:
             self.contract_full_lines()
 
         self.stun_cooldown -= 1
+
+    def draw_holds(self):
+        for i,k in enumerate(self.holds.keys()):
+            fig = self.holds[k]
+            at = (self.hold_grid[i%2,i//2].left, self.hold_grid[i%2,i//2].top)
+            draw_on(self.screen, fig.get_fig_preview(), at )
+            pg.draw.rect(self.screen, col.borders, (at[0]-5, at[1]-5, 110, 110), 5)
 
     def ret_back(self):
         self.mode.set_mode("menu")
@@ -107,8 +122,6 @@ class Game:
     def hold(self):
         fig = self.map.seek_figure()
         size = len(fig.figure)
-
-        #if size not in list(range(*self.mode.gen_range)): return
 
         if size in self.holds:
             self.holds[size].apply_pos((10,42))

@@ -31,6 +31,9 @@ class ViewScreen_Layout(Layout):
             return ViewScreen_Layout(self.vwp, self.vhp, self.offset + other)
         return ViewScreen_Layout(self.vwp + other.vwp, self.vhp + other.vhp, self.offset + other.offset)
     
+    def __radd__(self, other : Self | int) -> Self:
+        return self + other
+    
     def __sub__(self, other : Self | int) -> Self:
         if isinstance(other, int | float):
             return ViewScreen_Layout(self.vwp, self.vhp, self.offset - other)

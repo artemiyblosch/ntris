@@ -43,4 +43,4 @@ class Figure:
         return fig
     
     def apply_pos(self, pos : Point):
-        self.figure = [(point[0]+pos[0], point[1]+pos[1]) for point in self.figure]
+        self.figure = [(point[0]+pos[0], point[1]+pos[1]) for point in self.normalized().figure]
