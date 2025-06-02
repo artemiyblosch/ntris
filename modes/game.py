@@ -161,7 +161,7 @@ class Game:
         if keys[pg.K_UP] and self.map.can_rotate() and can_rot:
             self.map.rotate()
             self.stun_cooldown += 1
-        if keys[pg.K_SPACE] and can_do:
+        if keys[pg.K_SPACE] and self.map.can_move() and can_do:
             while self.map.can_move(): self.map.move()
             self.stun_cooldown = 20
         if keys[pg.K_v] and self.map.can_flip() and can_rot:
