@@ -51,6 +51,11 @@ class Game:
         sprites.add(self.next_piece_text)
     
     def frame(self):
+        keys = pg.key.get_pressed()
+        if keys[pg.K_F1]:
+            self.paused = not self.paused
+            sleep(0.1)
+        
         if self.paused: 
             pg.draw.rect(self.screen,col.bg,(0,0,1000,1000))
             return
@@ -144,9 +149,6 @@ class Game:
         keys = pg.key.get_pressed()
         can_do = self.move_timer.tick(self.fps)
         can_rot = self.rotate_timer.tick(self.fps)
-        if keys[pg.K_F1]:
-            self.paused = not self.paused
-            sleep(0.1)
 
         if keys[pg.K_RIGHT] and self.map.can_move(direction=(1,0)) and can_do:
             self.map.move(direction=(1,0))

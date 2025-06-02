@@ -27,7 +27,7 @@ class Figure:
         tile = pg.transform.scale_by(tile,factor/16)
 
         for t in fig:
-            draw_on( fig_surf, tile, (t[0]*factor + (size-w)/2, t[1]*factor + (size-h)/2), self.color )
+            draw_on( fig_surf, tile, (t[0]*factor + (size-w)/2, size - ((t[1]+1)*factor + (size-h)/2)), self.color )
         return fig_surf
     
     def apply_to(self, map, tag : str = "a"):
