@@ -51,8 +51,10 @@ class Game:
         sprites.add(self.next_piece_text)
     
     def frame(self):
+        if self.paused: 
+            pg.draw.rect(self.screen,col.bg,(0,0,1000,1000))
+            return
         pg.draw.rect(self.screen, col.borders, (self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
-
         self.move()
         self.draw_holds()
         
@@ -125,7 +127,9 @@ class Game:
     def hold(self):
         fig = self.map.seek_figure()
         size = len(fig.figure)
-
+        for i in fig.figure:
+            del self.map[i]
+        
         if size in self.holds:
             self.holds[size].apply_pos((10,42))
             self.holds[size].apply_to(self.map)
@@ -135,8 +139,6 @@ class Game:
         
         self.holds[size] = fig
         self.held = True
-        for i in fig.figure:
-            del self.map[i]
 
     def move(self):
         keys = pg.key.get_pressed()
@@ -145,9 +147,6 @@ class Game:
         if keys[pg.K_F1]:
             self.paused = not self.paused
             sleep(0.1)
-        if self.paused: 
-            pg.draw.rect(self.screen,col.bg,(0,0,1000,1000))
-            return
 
         if keys[pg.K_RIGHT] and self.map.can_move(direction=(1,0)) and can_do:
             self.map.move(direction=(1,0))
