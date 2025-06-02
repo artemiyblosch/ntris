@@ -5,7 +5,7 @@ from utils import *
 from mapgen import *
 from assets_lib import *
 from modes.mode_obj import Mode
-from layouts import Grid, ViewScreen_Layout
+from layouts import Grid
 
 class Game:
     def __init__(self, screen : pg.Surface, mode : Mode, fps : int = 60):
@@ -38,6 +38,9 @@ class Game:
             for j in range(42):
                 draw_on(self.background, "tile_block.jpg", (i*16,j*16), col.bg)
         
+        self.empty_line = pg.Surface((21*16,16))
+        draw_on(self.empty_line,self.background,(0,0))
+        
         self.hold_grid = Grid(
             (100,100),
             (20,40),
@@ -68,16 +71,20 @@ class Game:
         draw_on(self.screen, precompile_text(f"{self.next_figure.size()}", "small", col.borders), (500,415))
         pg.draw.rect(self.screen, col.borders, (495,295,110,110),5)
 
-        for i,v in enum(self.map):
-            if i[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*i), v.color)
+        fig = self.map.seek_figure()
+        for f_tile in fig.figure:
+            if f_tile[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*f_tile), fig.color)
         
         if self.map.can_move():
             if self.fall_timer.tick(self.fps): self.map.move()
             self.stun_cooldown = 20
         elif self.stun_cooldown < 0:
+            for f_tile in fig.figure:
+                if f_tile[1] < 42: draw_on(self.background, "tile_block.jpg", (f_tile[0]*16, (41-f_tile[1])*16), fig.color)
             self.map.remove_figure_status()
-            for i in range(21):
-                if self.map[i,41] != None: self.ret_back()
+            
+            for i in fig.figure:
+                if i[1] > 41: self.ret_back()
             self.apply_next_figure()
             self.contract_full_lines()
 
@@ -128,6 +135,10 @@ class Game:
                     self.score_text.ch_text(f"Score {self.score}")
                     self.map.delete_line(i)
                     is_going = True
+                    tmp = pg.Surface((21*16,(42-i)*16))
+                    tmp.blit(self.background,(0,16))
+                    tmp.blit(self.empty_line,(0,0))
+                    self.background.blit(tmp,(0,0))
 
     def hold(self):
         fig = self.map.seek_figure()

@@ -1,6 +1,5 @@
 import pygame as pg
 from types_ import Point
-from copy import deepcopy
 
 def get_image(path : str, alpha : bool = False) -> pg.Surface:
     if alpha:
