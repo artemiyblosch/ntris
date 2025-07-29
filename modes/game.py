@@ -8,10 +8,37 @@ from modes.mode_obj import Mode
 from layouts import Grid
 
 class Game:
+    def check_size(self):
+        if (a:=self.screen.get_height()) < 600:
+            self.size = 8
+        elif a < 800:
+            self.size = 12
+        else:
+            self.size = 16
+
+    @property
+    def background(self):
+        return self.backgrounds[self.size]
+    
+    @property
+    def empty_line(self):
+        return self.empty_lines[self.size]
+
+    def create_size(self,size):
+        self.backgrounds[size] = pg.Surface((21*size,42*size))
+        for i in range(21):
+            for j in range(42):
+                draw_on(self.backgrounds[size], f"tile_block{size}.jpg", (i*size,j*size), col.bg)
+
+        self.empty_lines[size] = pg.Surface((21*size, size))
+        draw_on(self.empty_lines[size],self.backgrounds[size],(0,0))
+
     def __init__(self, screen : pg.Surface, mode : Mode, fps : int = 60):
         self.fps = fps
         self.mode = mode
         self.screen = screen
+        self.size = 16
+        self.sizes = [8, 12, 16]
 
         self.score = 0
         self.paused = False
@@ -33,14 +60,10 @@ class Game:
         self.next_figure = gen_figure(size_range=self.mode.gen_range)
         gen_figure(size_range=self.mode.gen_range).apply_to(self.map)
 
-        self.background = pg.Surface((21*16,42*16))
-        for i in range(21):
-            for j in range(42):
-                draw_on(self.background, "tile_block.jpg", (i*16,j*16), col.bg)
-        
-        self.empty_line = pg.Surface((21*16,16))
-        draw_on(self.empty_line,self.background,(0,0))
-        
+        self.backgrounds = {}
+        self.empty_lines = {}
+        for i in self.sizes: self.create_size(i)
+
         self.hold_grid = Grid(
             (100,100),
             (20,40),
@@ -54,15 +77,23 @@ class Game:
         sprites.add(self.next_piece_text)
     
     def frame(self):
+        self.check_size()
         keys = pg.key.get_pressed()
         if keys[pg.K_F1]:
             self.paused = not self.paused
             sleep(0.1)
         
         if self.paused: 
-            pg.draw.rect(self.screen,col.bg,(0,0,1000,1000))
+            pg.draw.rect(self.screen,col.bg,(0,0,self.screen.get_width(),self.screen.get_height()))
             return
-        pg.draw.rect(self.screen, col.borders, (self.zone_start[0]-5,self.zone_start[1]-5,21*16 + 10,42*16 + 10),5)
+        pg.draw.rect(
+            self.screen,
+            col.borders,
+            (self.zone_start[0]-5,
+             self.zone_start[1]-5,
+             21*self.size + 10,
+             42*self.size + 10),
+            5)
         self.move()
         self.draw_holds()
         
@@ -73,14 +104,17 @@ class Game:
 
         fig = self.map.seek_figure()
         for f_tile in fig.figure:
-            if f_tile[1] < 42: draw_on(self.screen, "tile_block.jpg", self.convert(*f_tile), fig.color)
+            if f_tile[1] < 42: 
+                draw_on(self.screen, f'tile_block{self.size}.jpg', 
+                        self.convert(*f_tile), fig.color)
         
         if self.map.can_move():
             if self.fall_timer.tick(self.fps): self.map.move()
             self.stun_cooldown = 20
         elif self.stun_cooldown < 0:
             for f_tile in fig.figure:
-                if f_tile[1] < 42: draw_on(self.background, "tile_block.jpg", (f_tile[0]*16, (41-f_tile[1])*16), fig.color)
+                if f_tile[1] >= 42: continue
+                for i in self.sizes: draw_on(self.backgrounds[i], f"tile_block{i}.jpg", (f_tile[0]*i, (41-f_tile[1])*i), fig.color)
             self.map.remove_figure_status()
             
             for i in fig.figure:
@@ -116,7 +150,8 @@ class Game:
             file.write(f_c)
 
     def convert(self,x,y):
-        return (x * 16 + self.zone_start[0], 1000 - self.zone_start[1] - 6*16 + 8 - y * 16)
+        return (x * self.size + self.zone_start[0], 
+                self.zone_start[1] + self.size * (41 - y))
 
     def apply_next_figure(self):
         self.next_figure.apply_to(self.map)
@@ -130,15 +165,16 @@ class Game:
         while is_going:
             is_going = False
             for i in range(41):
-                if not has(self.map.get_line(i),None):
-                    self.score += 10
-                    self.score_text.ch_text(f"Score {self.score}")
-                    self.map.delete_line(i)
-                    is_going = True
-                    tmp = pg.Surface((21*16,(42-i)*16))
-                    tmp.blit(self.background,(0,16))
-                    tmp.blit(self.empty_line,(0,0))
-                    self.background.blit(tmp,(0,0))
+                if has(self.map.get_line(i),None): continue
+                self.score += 10
+                self.score_text.ch_text(f"Score {self.score}")
+                self.map.delete_line(i)
+                is_going = True
+                for J in self.sizes:
+                    tmp = pg.Surface((21*J,(42-i)*J))
+                    tmp.blit(self.backgrounds[J],(0,J))
+                    tmp.blit(self.empty_lines[J],(0,0))
+                    self.backgrounds[J].blit(tmp,(0,0))
 
     def hold(self):
         fig = self.map.seek_figure()

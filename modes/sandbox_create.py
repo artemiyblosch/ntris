@@ -3,7 +3,6 @@ from sprites import *
 from modes.mode_obj import *
 from sprites import sprites
 import colors as col
-import os
 
 class Sandbox:
     def __init__(self, screen : pg.Surface, mode : Mode, fps : int):

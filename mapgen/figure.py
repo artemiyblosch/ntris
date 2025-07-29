@@ -23,7 +23,7 @@ class Figure:
         h = factor*(y_max-y_min+1)
 
         fig_surf = pg.Surface((size,size))
-        tile = get_image("tile_block.jpg")
+        tile = get_image("tile_block16.jpg")
         tile = pg.transform.scale_by(tile,factor/16)
 
         for t in fig:
