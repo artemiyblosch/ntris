@@ -45,7 +45,7 @@ class Game:
         self.holds : dict[int,Figure] = {}
         self.held = False
         
-        self.stun_cooldown = 0
+        self.stun_cooldown = 20
         self.fall_timer = Timer(framerate=8)
         self.move_timer = Timer(framerate=13)
         self.rotate_timer = Timer(framerate=9)
@@ -135,6 +135,8 @@ class Game:
 
     def ret_back(self):
         self.mode.set_mode("menu")
+        self.stun_cooldown = 20
+        self.map = Map()
         if self.mode.sandbox_entry == -1: return
 
         with open("./save/sandbox.txt", "r") as file:
